@@ -106,6 +106,8 @@
             
             <a href="/categories"><span class="nav-prompt">./</span>CATEGORIES</a>
             
+            <a href="/link/"><span class="nav-prompt">./</span>LINKS</a>
+            
         </nav>
     </div>
 </header>
@@ -114,33 +116,36 @@
     <main id="main-content" class="site-main" tabindex="-1">
         <!-- Main Content -->
         <div class="container">
-            <div class="row">
-    <div class="col-sm-12">
+            
+    
 
-        <!--Title and Logo-->
+<section class="taxonomy-page">
+    <header class="taxonomy-header">
+        <div>
+            <p class="section-kicker">// ATTACK_SURFACE_MAP</p>
+            <h1>分类频道<span class="cursor-block" aria-hidden="true"></span></h1>
+        </div>
+        <div class="taxonomy-header__count">
+            <strong>1</strong>
+            <span>CHANNELS_ONLINE</span>
+        </div>
+    </header>
+
+    <div class="taxonomy-command"><span class="prompt">$</span> ls ./research/channels --sort=count</div>
+
+    <div class="category-matrix">
         
-            <header>
-    <div class="logo">
-        
-            <a href="/"><i class="logo-icon fa fa-folder-open" aria-hidden="true"></i></a>
-        
-        
-            <h1 id="main-title" class="title">分类</h1>
+            <a class="category-node" href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8/">
+                <span class="category-node__id">CH_01</span>
+                <strong>二进制安全</strong>
+                <span class="category-node__count">1 LOGS</span>
+                <span class="category-node__arrow" aria-hidden="true">↗</span>
+            </a>
         
     </div>
-</header>
-            <section class="main archive-container">
-                
-                        <div class="archive-post">
-    <a href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8/">
-        二进制安全
-    </a>
-</div>
-                
-            </section>
-        
-    </div>
-</div>
+</section>
+
+
 
         </div>
     </main>
