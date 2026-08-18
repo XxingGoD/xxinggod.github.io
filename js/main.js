@@ -314,8 +314,111 @@ function initSiteSearch() {
     });
 }
 
+function initCodeCopy() {
+    function fallbackCopy(text) {
+        var textarea = document.createElement('textarea');
+        var active = document.activeElement;
+        var copied = false;
+
+        textarea.value = text;
+        textarea.setAttribute('readonly', 'readonly');
+        textarea.setAttribute('aria-hidden', 'true');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            copied = document.execCommand('copy');
+        } catch (error) {
+            copied = false;
+        }
+        document.body.removeChild(textarea);
+        if (active && typeof active.focus === 'function') active.focus();
+        return copied;
+    }
+
+    function copyText(text, callback) {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(text).then(function () {
+                callback(true);
+            }).catch(function () {
+                callback(fallbackCopy(text));
+            });
+        } else {
+            callback(fallbackCopy(text));
+        }
+    }
+
+    function sourceText(source) {
+        var lines = source.querySelectorAll('.line');
+        var value;
+
+        if (lines.length) {
+            value = Array.prototype.map.call(lines, function (line) {
+                return line.textContent || '';
+            }).join('\n');
+        } else {
+            value = source.textContent || source.innerText || '';
+        }
+        return value.replace(/\r\n/g, '\n').replace(/\n$/, '');
+    }
+
+    function createCopyButton(source) {
+        var button = document.createElement('button');
+        var resetTimer;
+
+        button.type = 'button';
+        button.className = 'code-copy-button';
+        button.setAttribute('aria-label', '复制代码');
+        button.textContent = '[COPY]';
+        button.addEventListener('click', function () {
+            copyText(sourceText(source), function (copied) {
+                window.clearTimeout(resetTimer);
+                button.textContent = copied ? '[COPIED]' : '[FAILED]';
+                button.setAttribute('aria-label', copied ? '代码已复制' : '复制失败');
+                button.classList.toggle('is-copied', copied);
+                resetTimer = window.setTimeout(function () {
+                    button.textContent = '[COPY]';
+                    button.setAttribute('aria-label', '复制代码');
+                    button.classList.remove('is-copied');
+                }, 1800);
+            });
+        });
+        return button;
+    }
+
+    function installCopyButtons() {
+        document.querySelectorAll('figure.highlight').forEach(function (figure) {
+            var source;
+            if (figure.getAttribute('data-copy-ready') === 'true') return;
+            source = figure.querySelector('td.code pre') || figure.querySelector('.code pre') || figure.querySelector('pre');
+            if (!source) return;
+            figure.setAttribute('data-copy-ready', 'true');
+            figure.classList.add('has-code-copy');
+            figure.appendChild(createCopyButton(source));
+        });
+
+        document.querySelectorAll('pre > code').forEach(function (code) {
+            var pre = code.parentNode;
+            var wrapper;
+            if (pre.closest('figure.highlight') || pre.getAttribute('data-copy-ready') === 'true') return;
+            wrapper = document.createElement('div');
+            wrapper.className = 'code-block code-block--plain';
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+            wrapper.appendChild(createCopyButton(code));
+            pre.setAttribute('data-copy-ready', 'true');
+            pre.classList.add('has-code-copy');
+        });
+    }
+
+    installCopyButtons();
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
     initArticleUi();
     initSiteSearch();
+    initCodeCopy();
 });
