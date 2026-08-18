@@ -2051,17 +2051,17 @@ header .logo .title {
   margin-top: 0;
 }
 .post-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   position: relative;
   min-height: 460px;
   padding: clamp(32px, 4vw, 54px);
   background: rgba(16,11,29,0.6);
 }
 .post-card .post-card__meta {
-  position: absolute;
-  z-index: 1;
-  top: clamp(32px, 4vw, 54px);
-  right: clamp(32px, 4vw, 54px);
-  left: clamp(32px, 4vw, 54px);
+  position: static;
+  min-width: 0;
+  min-height: 24px;
   gap: 20px;
   font-size: 14px;
 }
@@ -2071,7 +2071,7 @@ header .logo .title {
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  padding: 78px 0 32px;
+  padding: 34px 0 32px;
   margin-top: 0;
 }
 .post-card .post-card__command {
@@ -3062,14 +3062,12 @@ html {
     padding: 28px 20px;
   }
   .post-card__meta {
-    top: 28px;
-    right: 20px;
-    left: 20px;
+    min-height: 22px;
     gap: 10px;
     font-size: 11px;
   }
   .post-card .post-card__body {
-    padding-top: 68px;
+    padding-top: 26px;
   }
   .post-card .post-card__command {
     font-size: 13px;
