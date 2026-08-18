@@ -1,78 +1,3 @@
-var alphaDust = function () {
-
-    var _menuOn = false;
-
-    function initPostHeader() {
-        $('.main .post').each(function () {
-            var $post = $(this);
-            var $header = $post.find('.post-header.index');
-            var $title = $post.find('h1.title');
-            var $readMoreLink = $post.find('a.read-more');
-
-            var toggleHoverClass = function () {
-                $header.toggleClass('hover');
-            };
-
-            $title.hover(toggleHoverClass, toggleHoverClass);
-            $readMoreLink.hover(toggleHoverClass, toggleHoverClass);
-        });
-    }
-
-    function _menuShow () {
-        $('nav a').addClass('menu-active');
-        $('.menu-bg').show();
-        $('.menu-item').css({opacity: 0});
-        TweenLite.to('.menu-container', 1, {padding: '0 40px'});
-        TweenLite.to('.menu-bg', 1, {opacity: '0.92'});
-        TweenMax.staggerTo('.menu-item', 0.5, {opacity: 1}, 0.3);
-        _menuOn = true;
-
-        $('.menu-bg').hover(function () {
-            $('nav a').toggleClass('menu-close-hover');
-        });
-    }
-
-    function _menuHide() {
-        $('nav a').removeClass('menu-active');
-        TweenLite.to('.menu-bg', 0.5, {opacity: '0', onComplete: function () {
-            $('.menu-bg').hide();
-        }});
-        TweenLite.to('.menu-container', 0.5, {padding: '0 100px'});
-        $('.menu-item').css({opacity: 0});
-        _menuOn = false;
-    }
-
-    function initMenu() {
-
-        if (!$('.menu-bg').length) return;
-
-        $('nav a').click(function () {
-            if(_menuOn) {
-                _menuHide();
-            } else {
-                _menuShow();
-            }
-        });
-
-        $('.menu-bg').click(function (e) {
-            if(_menuOn && e.target === this) {
-                _menuHide();
-            }
-        });
-    }
-
-    function displayArchives() {
-        $('.archive-post').css({opacity: 0});
-        TweenMax.staggerTo('.archive-post', 0.4, {opacity: 1}, 0.15);
-    }
-
-    return {
-        initPostHeader: initPostHeader,
-        initMenu: initMenu,
-        displayArchives: displayArchives
-    };
-}();
-
 function initArticleUi() {
     var article = document.querySelector('[data-article-content]');
     if (!article) return;
@@ -136,17 +61,13 @@ function initSiteSearch() {
     var input = panel.querySelector('[data-search-input]');
     var results = panel.querySelector('[data-search-results]');
     var status = panel.querySelector('[data-search-status]');
-    var indexNode = panel.querySelector('[data-search-index]');
-    var posts = [];
+    var indexUrl = panel.getAttribute('data-search-index-url') || '/search.json';
+    var posts = null;
+    var indexLoading = false;
+    var indexCallbacks = [];
     var isOpen = false;
     var lastFocused = null;
     var searchTimer = null;
-
-    try {
-        posts = JSON.parse(indexNode.textContent || '[]');
-    } catch (error) {
-        posts = [];
-    }
 
     function normalise(value) {
         var text = String(value || '');
@@ -154,19 +75,86 @@ function initSiteSearch() {
         return text.toLocaleLowerCase();
     }
 
-    posts.forEach(function (post) {
-        post._title = normalise(post.title);
-        post._excerpt = normalise(post.excerpt);
-        post._tags = normalise((post.tags || []).join(' '));
-        post._categories = normalise((post.categories || []).join(' '));
-        post._search = normalise([
-            post.title,
-            post.excerpt,
-            (post.tags || []).join(' '),
-            (post.categories || []).join(' '),
-            post.date
-        ].join(' '));
-    });
+    function preparePosts(payload) {
+        var entries = payload && Array.isArray(payload.posts) ? payload.posts : payload;
+        if (!Array.isArray(entries)) throw new Error('Invalid search index');
+        posts = entries.map(function (post) {
+            post = post || {};
+            post.title = String(post.title || 'UNTITLED_TRANSMISSION');
+            post.excerpt = String(post.excerpt || '');
+            post.tags = Array.isArray(post.tags) ? post.tags : [];
+            post.categories = Array.isArray(post.categories) ? post.categories : [];
+            post._title = normalise(post.title);
+            post._excerpt = normalise(post.excerpt);
+            post._tags = normalise(post.tags.join(' '));
+            post._categories = normalise(post.categories.join(' '));
+            post._search = normalise([
+                post.title,
+                post.excerpt,
+                post._tags,
+                post._categories,
+                post.date
+            ].join(' '));
+            return post;
+        });
+    }
+
+    function finishIndex(error, payload) {
+        var callbacks = indexCallbacks.slice();
+        indexCallbacks = [];
+        indexLoading = false;
+        if (!error) {
+            try {
+                preparePosts(payload);
+            } catch (parseError) {
+                error = parseError;
+            }
+        }
+        callbacks.forEach(function (callback) { callback(error, posts || []); });
+    }
+
+    function loadWithXhr() {
+        var request = new XMLHttpRequest();
+        request.open('GET', indexUrl, true);
+        request.setRequestHeader('Accept', 'application/json');
+        request.onreadystatechange = function () {
+            var payload;
+            if (request.readyState !== 4) return;
+            if (request.status < 200 || request.status >= 300) {
+                finishIndex(new Error('Search index request failed'));
+                return;
+            }
+            try {
+                payload = JSON.parse(request.responseText);
+                finishIndex(null, payload);
+            } catch (error) {
+                finishIndex(error);
+            }
+        };
+        request.onerror = function () { finishIndex(new Error('Search index request failed')); };
+        request.send(null);
+    }
+
+    function loadIndex(callback) {
+        if (posts) {
+            callback(null, posts);
+            return;
+        }
+        indexCallbacks.push(callback);
+        if (indexLoading) return;
+        indexLoading = true;
+        if (window.fetch) {
+            window.fetch(indexUrl, {credentials: 'same-origin', headers: {Accept: 'application/json'}})
+                .then(function (response) {
+                    if (!response.ok) throw new Error('Search index request failed');
+                    return response.json();
+                })
+                .then(function (payload) { finishIndex(null, payload); })
+                .catch(function () { loadWithXhr(); });
+        } else {
+            loadWithXhr();
+        }
+    }
 
     function appendText(parent, tagName, className, value) {
         var element = document.createElement(tagName);
@@ -201,6 +189,18 @@ function initSiteSearch() {
 
         if (!query) {
             status.textContent = 'TYPE_TO_SCAN_THE_ARCHIVE';
+            return;
+        }
+
+        if (!posts) {
+            status.textContent = 'LOADING_LOCAL_INDEX…';
+            loadIndex(function (error) {
+                if (error) {
+                    status.textContent = 'INDEX_OFFLINE // RETRY_LATER';
+                    return;
+                }
+                render();
+            });
             return;
         }
 
@@ -249,7 +249,14 @@ function initSiteSearch() {
         panel.classList.add('is-open');
         document.body.classList.add('search-open');
         openButtons.forEach(function (button) { button.setAttribute('aria-expanded', 'true'); });
-        status.textContent = 'INDEX_READY // ' + posts.length + ' LOGS';
+        status.textContent = posts ? 'INDEX_READY // ' + posts.length + ' LOGS' : 'LOADING_LOCAL_INDEX…';
+        if (!posts) {
+            loadIndex(function (error, index) {
+                if (error) status.textContent = 'INDEX_OFFLINE // RETRY_LATER';
+                else if (!input.value) status.textContent = 'INDEX_READY // ' + index.length + ' LOGS';
+                else render();
+            });
+        }
         window.setTimeout(function () {
             input.focus();
             input.select();
@@ -308,10 +315,7 @@ function initSiteSearch() {
 }
 
 
-$(document).ready(function () {
-    alphaDust.initPostHeader();
-    alphaDust.initMenu();
-    alphaDust.displayArchives();
+document.addEventListener('DOMContentLoaded', function () {
     initArticleUi();
     initSiteSearch();
 });
