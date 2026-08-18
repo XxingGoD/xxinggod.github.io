@@ -2268,7 +2268,7 @@ html {
   margin: 0;
   color: #ededed;
   font-family: "Fusion Pixel Latin", "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: clamp(42px, 6.2vw, 96px);
+  font-size: clamp(46px, 6.8vw, 108px);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.04;
@@ -2724,7 +2724,7 @@ html {
     display: none;
   }
   .article-header h1 {
-    font-size: clamp(40px, 10vw, 78px);
+    font-size: clamp(42px, 10.5vw, 84px);
   }
   .taxonomy-header {
     grid-template-columns: minmax(0, 1fr);
