@@ -1,4 +1,4 @@
-var posts=["posts/godbolt-test/","posts/hello-world/"];function toRandomPost(){
+var posts=["posts/godbolt-test/","posts/hello-world/","posts/cve-2023-26315/"];function toRandomPost(){
     pjax.loadUrl('/'+posts[Math.floor(Math.random() * posts.length)]);
   };var friend_link_list=[{"name":"Re0","link":"https://r1c3sh0w3r.github.io/","avatar":null,"descr":"Reverse","recommend":false},{"name":"Dr","link":"https://www.cnblogs.com/DrD1","avatar":null,"descr":"Reverse","recommend":false},{"name":"tux","link":"https://tuxnode.fun/","avatar":null,"descr":"Web","recommend":false}];
     var refreshNum = 1;
