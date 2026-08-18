@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="标签"/>
+        <meta property="og:title" content="Starlight&#39;s blog"/>
     
 
     <!--Open Graph Description-->
@@ -33,7 +33,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
     
 
     <!--Page Cover-->
@@ -47,7 +47,7 @@
 
     <!-- Title -->
     
-    <title>标签 - Starlight&#39;s blog</title>
+    <title>C++ - Starlight&#39;s blog</title>
 
     <!-- Bootstrap Core CSS (local) -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -117,56 +117,67 @@
         <!-- Main Content -->
         <div class="container">
             
-    
 
 <section class="taxonomy-page">
     <header class="taxonomy-header">
         <div>
-            <p class="section-kicker">// INDICATOR_DATABASE</p>
-            <h1>标签索引<span class="cursor-block" aria-hidden="true"></span></h1>
+            <p class="section-kicker">// TAG_TRANSMISSION_INDEX</p>
+            <h1>#C++<span class="cursor-block" aria-hidden="true"></span></h1>
         </div>
         <div class="taxonomy-header__count">
-            <strong>7</strong>
-            <span>INDICATORS_FOUND</span>
+            <strong>1</strong>
+            <span>LOGS_FOUND</span>
         </div>
     </header>
 
-    <div class="taxonomy-command"><span class="prompt">$</span> grep -R "indicator" ./logs | uniq -c | sort -nr</div>
+    <div class="archive-command"><span class="prompt">$</span> find ./logs -type f | sort --key=date --reverse</div>
 
-    <div class="tag-cloud-terminal">
+    <div class="archive-list">
         
-            <a class="tag-node tag-node--level-5" href="/tags/IOT/">
-                <span>+</span>IOT<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
-                <span>+</span>漏洞分析<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/">
-                <span>+</span>路由器<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/CVE/">
-                <span>+</span>CVE<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/test/">
-                <span>+</span>test<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/godbolt/">
-                <span>+</span>godbolt<small>1</small>
-            </a>
-        
-            <a class="tag-node tag-node--level-5" href="/tags/C/">
-                <span>+</span>C++<small>1</small>
-            </a>
+            <section class="archive-year">
+                <header>
+                    <span>2026</span>
+                    <small>// YEAR_BLOCK</small>
+                </header>
+
+                <div class="archive-year__posts">
+                    
+                        <article class="archive-entry">
+                            <time datetime="2026-08-18T03:30:00.000Z"><span>08</span>.18</time>
+                            <span class="archive-entry__line" aria-hidden="true"></span>
+                            <div>
+                                <h2><a href="/posts/godbolt-test/">Godbolt 代码运行块测试</a></h2>
+                                <p>
+                                    
+                                        <span>UNCATEGORIZED</span>
+                                    
+                                    <span> · #test</span>
+                                </p>
+                            </div>
+                            <a class="archive-entry__open" href="/posts/godbolt-test/" aria-label="Open Godbolt 代码运行块测试">↗</a>
+                        </article>
+                    
+                </div>
+            </section>
         
     </div>
+
+    <nav class="archive-pagination" aria-label="Archive pagination">
+        <div class="archive-pagination__direction">
+            
+                <span>← PREV_PACKET</span>
+            
+        </div>
+        <div class="archive-pagination__pages">
+            <span>PAGE</span><strong>01</strong><span>/</span><span>01</span>
+        </div>
+        <div class="archive-pagination__direction archive-pagination__direction--next">
+            
+                <span>NEXT_PACKET →</span>
+            
+        </div>
+    </nav>
 </section>
-
-
 
         </div>
     </main>
