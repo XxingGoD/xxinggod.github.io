@@ -2330,8 +2330,8 @@ html {
 }
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(190px, 260px) minmax(0, 900px);
-  gap: clamp(48px, 7vw, 116px);
+  grid-template-columns: minmax(0, 900px) minmax(220px, 300px);
+  gap: clamp(48px, 5vw, 86px);
   align-items: start;
   justify-content: center;
   padding: clamp(60px, 6vw, 90px) 0;
@@ -2361,7 +2361,7 @@ html {
   margin: 0 0 22px;
   color: #ededed;
   font-family: "Fusion Pixel Latin", "SFMono-Regular", "Cascadia Mono", "Noto Sans Mono CJK SC", "PingFang SC", monospace;
-  font-size: 13px;
+  font-size: 16px;
 }
 .toc-panel .toc-panel__title span {
   color: #b45cff;
@@ -2383,8 +2383,8 @@ html {
   display: block;
   color: #807697;
   border-bottom: 0;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   transition: color 150ms ease;
 }
 .toc-panel a:hover,
@@ -2641,7 +2641,7 @@ html {
     grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.55fr);
   }
   .article-layout {
-    grid-template-columns: minmax(160px, 210px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
     gap: 44px;
   }
   .post-card .post-card__body h3 {
