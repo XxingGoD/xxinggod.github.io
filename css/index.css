@@ -2782,9 +2782,9 @@ i.anzhiyu-icon-hashtag {
   --anzhiyu-blue-tint: rgba(92,161,255,0.1);
   --anzhiyu-theme-op-deep: rgba(0,132,255,0.867);
   --global-bg: #18171d;
-  --anzhiyu-theme: #f2b94b;
+  --anzhiyu-theme: #425aef;
   --anzhiyu-theme-deep: #0076e5;
-  --anzhiyu-theme-op: rgba(242,185,75,0.137);
+  --anzhiyu-theme-op: rgba(66,90,239,0.137);
   --anzhiyu-blue: #0084ff;
   --anzhiyu-red: #ff3842;
   --anzhiyu-pink: #ff7c7c;
@@ -2797,7 +2797,7 @@ i.anzhiyu-icon-hashtag {
   --anzhiyu-hovertext: #0a84ff;
   --anzhiyu-ahoverbg: #fff;
   --anzhiyu-scrollbar: rgba(200,200,223,0.4);
-  --anzhiyu-lighttext: #f2b94b;
+  --anzhiyu-lighttext: var(--anzhiyu-main);
   --anzhiyu-secondtext: #a1a2b8;
   --anzhiyu-scrollbar: rgba(200,200,223,0.4);
   --anzhiyu-card-btn-bg: #30343f;
@@ -22756,13 +22756,13 @@ svg.icon.faa-tada {
   font-size: 1.1em;
 }
 .bangumi-info-item {
-  border-right: 1px solid #f2b94b;
+  border-right: 1px solid #425aef;
 }
 .bangumi-info-item span {
-  color: #f2b94b;
+  color: #425aef;
 }
 .bangumi-info-item em {
-  color: #f2b94b;
+  color: #425aef;
 }
 
 /* 修复 bgm 数据源封面尺寸不一致问题 */
