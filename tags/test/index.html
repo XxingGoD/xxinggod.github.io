@@ -80,7 +80,7 @@
 <meta name="generator" content="Hexo 8.1.2"></head>
 
 
-<body id="top" class="page-type-page title-style-pixel">
+<body id="top" class="page-type-page title-style-clean">
 
 <a class="skip-link" href="#main-content">SKIP_TO_CONTENT</a>
 <div class="site-noise" aria-hidden="true"></div>
@@ -138,67 +138,51 @@
         <!-- Main Content -->
         <div class="container">
             
-
 <section class="taxonomy-page">
-    <header class="taxonomy-header">
-        <div>
-            <p class="section-kicker">// TAG_TRANSMISSION_INDEX</p>
-            <h1>#test<span class="cursor-block" aria-hidden="true"></span></h1>
-        </div>
-        <div class="taxonomy-header__count">
-            <strong>1</strong>
-            <span>LOGS_FOUND</span>
-        </div>
+  <header class="taxonomy-header">
+    <div>
+      <p class="section-kicker">// INDICATOR_STREAM</p>
+      <h1><span class="accent">+</span> test<span class="cursor-block" aria-hidden="true"></span></h1>
+    </div>
+    <div class="taxonomy-header__count"><strong>1</strong><span>MATCHING_LOGS</span></div>
+  </header>
+  <div class="post-grid post-grid--taxonomy">
+    
+      
+<article class="post-card">
+    <header class="post-card__meta">
+        <span class="post-card__index">TX_01</span>
+        <time datetime="2026-08-18T03:30:00.000Z">2026.08.18</time>
+        <span class="post-card__status"><i aria-hidden="true"></i>DONE</span>
     </header>
 
-    <div class="archive-command"><span class="prompt">$</span> find ./logs -type f | sort --key=date --reverse</div>
-
-    <div class="archive-list">
+    <div class="post-card__body">
+        <p class="post-card__command"><span>&gt;</span> cat ./research/godbolt-test.log</p>
         
-            <section class="archive-year">
-                <header>
-                    <span>2026</span>
-                    <small>// YEAR_BLOCK</small>
-                </header>
-
-                <div class="archive-year__posts">
-                    
-                        <article class="archive-entry">
-                            <time datetime="2026-08-18T03:30:00.000Z"><span>08</span>.18</time>
-                            <span class="archive-entry__line" aria-hidden="true"></span>
-                            <div>
-                                <h2><a href="/research/godbolt-test/">Godbolt 代码运行块测试</a></h2>
-                                <p>
-                                    
-                                        <span>UNCATEGORIZED</span>
-                                    
-                                    <span> · #test</span>
-                                </p>
-                            </div>
-                            <a class="archive-entry__open" href="/research/godbolt-test/" aria-label="Open Godbolt 代码运行块测试">↗</a>
-                        </article>
-                    
-                </div>
-            </section>
-        
+        <h3><a href="/research/godbolt-test/">Godbolt 代码运行块测试</a></h3>
+        <p class="post-card__excerpt">在文章中直接编译、执行并查看 C++ 汇编输出</p>
     </div>
 
-    <nav class="archive-pagination" aria-label="Archive pagination">
-        <div class="archive-pagination__direction">
+    <footer class="post-card__footer">
+        <div class="post-card__taxonomies">
             
-                <span>← PREV_PACKET</span>
             
-        </div>
-        <div class="archive-pagination__pages">
-            <span>PAGE</span><strong>01</strong><span>/</span><span>01</span>
-        </div>
-        <div class="archive-pagination__direction archive-pagination__direction--next">
+                <a class="chip" href="/tags/test/">test</a>
             
-                <span>NEXT_PACKET →</span>
+                <a class="chip" href="/tags/godbolt/">godbolt</a>
             
         </div>
-    </nav>
+        <a class="post-card__read" href="/research/godbolt-test/" aria-label="OPEN_LOG: Godbolt 代码运行块测试">OPEN_LOG <span>→</span></a>
+    </footer>
+</article>
+
+    
+  </div>
+  
+
+
 </section>
+
 
         </div>
     </main>
