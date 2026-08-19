@@ -105,19 +105,23 @@
         <a class="site-mark" href="/">
             <span class="site-mark__bracket">[</span><span>STAR</span><span class="site-mark__slash">/</span><span class="site-mark__bracket">]</span>
         </a>
-        <nav class="site-nav" aria-label="Main navigation">
+        <button class="nav-toggle terminal-button" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false">
+            <span class="nav-toggle__label">MENU</span>
+            <span class="nav-toggle__glyph" aria-hidden="true">[+]</span>
+        </button>
+        <nav id="site-nav" class="site-nav" data-site-nav aria-label="Main navigation">
             
-            <a href="/"><span class="nav-prompt">./</span>HOME</a>
+            <a href="/" data-nav-link><span class="nav-prompt">./</span>HOME</a>
             
-            <a href="/archives"><span class="nav-prompt">./</span>ARCHIVE</a>
+            <a href="/archives" data-nav-link><span class="nav-prompt">./</span>ARCHIVE</a>
             
-            <a href="/about/"><span class="nav-prompt">./</span>ABOUT</a>
+            <a href="/about/" data-nav-link><span class="nav-prompt">./</span>ABOUT</a>
             
-            <a href="/tags"><span class="nav-prompt">./</span>TAGS</a>
+            <a href="/tags" data-nav-link><span class="nav-prompt">./</span>TAGS</a>
             
-            <a href="/categories"><span class="nav-prompt">./</span>CATEGORIES</a>
+            <a href="/categories" data-nav-link><span class="nav-prompt">./</span>CATEGORIES</a>
             
-            <a href="/link/"><span class="nav-prompt">./</span>LINKS</a>
+            <a href="/link/" data-nav-link><span class="nav-prompt">./</span>LINKS</a>
             
         </nav>
         
