@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+
+    
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#050310">
+    <meta name="color-scheme" content="dark">
+    <link rel="canonical" href="https://xxinggod.click/posts/%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95-%E5%BC%BA%E5%88%B6%E6%80%A7%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%8F%91%E6%8E%98-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+    <meta name="signal:search" content="/search.json">
+
+    <!--Description-->
+    
+        <meta name="description" content="Binary Researcher">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Starlight">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="《模糊测试-强制性安全漏洞发掘》学习笔记"/>
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="Binary Researcher" />
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Starlight&#39;s blog"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+    
+        <meta name="twitter:card" content="summary" />
+    
+    
+    
+
+    <!-- Title -->
+    
+    <title>《模糊测试-强制性安全漏洞发掘》学习笔记 - Starlight&#39;s blog</title>
+
+    <!-- Bootstrap Core CSS (local) -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <!-- Gallery (local) -->
+    <link rel="stylesheet" href="/css/featherlight.min.css">
+
+    <!-- Web Fonts (local) -->
+    <link rel="stylesheet" href="/css/fonts.css">
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Google Analytics -->
+    
+
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body id="top" class="page-type-post title-style-pixel is-article">
+
+<a class="skip-link" href="#main-content">SKIP_TO_CONTENT</a>
+<div class="site-noise" aria-hidden="true"></div>
+
+<div class="site-frame">
+    <!-- Terminal Header -->
+    <!-- Terminal Header: Window bar + nav row -->
+
+<header class="site-header">
+    <div class="window-bar">
+        <a class="window-title" href="/">
+            <span class="window-title__system">SECURITY RESEARCH LOG</span>
+            <span class="window-title__divider">·</span>
+            <span class="window-title__name">Starlight's blog</span>
+        </a>
+        <div class="window-status">
+            <span class="status-led" aria-hidden="true"></span>
+            <span class="window-status__host">XXINGGOD.CLICK</span>
+        </div>
+    </div>
+    <div class="nav-row">
+        <a class="site-mark" href="/">
+            <span class="site-mark__bracket">[</span><span>STAR</span><span class="site-mark__slash">/</span><span class="site-mark__bracket">]</span>
+        </a>
+        <button class="nav-toggle terminal-button" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false">
+            <span class="nav-toggle__label">MENU</span>
+            <span class="nav-toggle__glyph" aria-hidden="true">[+]</span>
+        </button>
+        <nav id="site-nav" class="site-nav" data-site-nav aria-label="Main navigation">
+            
+            <a href="/" data-nav-link><span class="nav-prompt">./</span>HOME</a>
+            
+            <a href="/archives" data-nav-link><span class="nav-prompt">./</span>ARCHIVE</a>
+            
+            <a href="/about/" data-nav-link><span class="nav-prompt">./</span>ABOUT</a>
+            
+            <a href="/tags" data-nav-link><span class="nav-prompt">./</span>TAGS</a>
+            
+            <a href="/categories" data-nav-link><span class="nav-prompt">./</span>CATEGORIES</a>
+            
+            <a href="/link/" data-nav-link><span class="nav-prompt">./</span>LINKS</a>
+            
+        </nav>
+        
+            <button class="search-trigger terminal-button" type="button" data-search-open aria-label="SEARCH">
+                <span class="search-trigger__key">⌘K</span>
+                <span>SEARCH</span>
+            </button>
+        
+    </div>
+</header>
+
+
+    <main id="main-content" class="site-main" tabindex="-1">
+        <!-- Main Content -->
+        <div class="container">
+            <section class="main">
+    
+
+<div class="reading-progress" aria-hidden="true"></div>
+
+<article class="article-page">
+    <header class="article-header" id="article-header">
+        <div class="article-header__protocol">
+            <span>// RESEARCH_TRANSMISSION</span>
+            <span>ID: UNTITLED</span>
+        </div>
+
+        <h1>《模糊测试-强制性安全漏洞发掘》学习笔记</h1>
+
+        
+            <p class="article-deck">以前fuzz的初期，现在到了ai时代，fuzz工具有了新的形式</p>
+        
+
+        <div class="article-meta">
+            
+                <div>
+                    <span>PUBLISHED</span>
+                    <time datetime="2026-08-18T23:47:00.000Z">2026.08.19</time>
+                </div>
+            
+            <div>
+                <span>READ_TIME</span>
+                <strong>7 MIN</strong>
+            </div>
+            <div>
+                <span>PAYLOAD</span>
+                <strong>3,311 CHAR</strong>
+            </div>
+            
+                <div>
+                    <span>CHANNEL</span>
+                    <a href="/categories/%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95/">模糊测试</a>
+                </div>
+            
+        </div>
+
+        
+            <div class="article-tags">
+                <span class="article-tags__label">// INDICATORS</span>
+                
+                    <a class="chip" href="/tags/IOT/">IOT</a>
+                
+                    <a class="chip" href="/tags/Fuzz/">Fuzz</a>
+                
+            </div>
+        
+
+        
+
+    </header>
+
+    <div class="article-layout ">
+        <div class="article-content" data-article-content>
+            <div class="article-content__start">
+                <span>BEGIN_PAYLOAD</span>
+                <span>20260819</span>
+            </div>
+
+            
+
+            <h2 id="白盒测试、黑盒测试和灰盒测试"><a href="#白盒测试、黑盒测试和灰盒测试" class="headerlink" title="白盒测试、黑盒测试和灰盒测试"></a>白盒测试、黑盒测试和灰盒测试</h2><blockquote>
+<p> 在较高的层次上有三种主要的方法用来发现安全漏洞:白盒测试、黑盒测试和灰盒测试。这些方法之间的差别 是由测试者可得到的资源决定的。白盒测试是一个极端,它需要对所有资源进行充分地访问。 这包括访问源代码、设计规约,甚至有可能还要访问程序员本人。黑盒测试是另一个极端,它 几乎不需要知道软件的内部细节,很大程度上带有盲目测试的味道。位于两个极端方法之间的是灰盒测试，它的定义因询问的人不同而不同。</p>
+</blockquote>
+<p>三种方法的本质区别在于<strong>测试者可获得的内部资源</strong>：</p>
+<ul>
+<li><strong>白盒（资源最多）</strong>：全知视角，可访问源代码、设计规约甚至开发人员。</li>
+<li><strong>黑盒（资源最少）</strong>：无知视角，仅知输入输出，完全依赖外部观察。</li>
+<li><strong>灰盒（资源中间）</strong>：折中视角，在黑盒基础上，通过**逆向工程（RE）**获取内部信息（无源码时则分析汇编，即“二进制审核”）。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">白盒测试</th>
+<th align="left">黑盒测试</th>
+<th align="left">灰盒测试</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心手段</strong></td>
+<td align="left">源代码评审（人工+自动化工具）</td>
+<td align="left">人工扫除 + <strong>模糊测试（Fuzzing）</strong></td>
+<td align="left">黑盒测试 + <strong>逆向工程&#x2F;二进制审核</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>最大优势</strong></td>
+<td align="left"><strong>覆盖率完全</strong>，可遍历所有代码路径</td>
+<td align="left"><strong>可用性强</strong>，无需任何内部权限，简单直接</td>
+<td align="left">在无源码时仍能深入分析内部逻辑</td>
+</tr>
+<tr>
+<td align="left"><strong>最大短板</strong></td>
+<td align="left"><strong>依赖源码可用性</strong>，且工具易产生误报</td>
+<td align="left"><strong>覆盖未知</strong>，不知道测试何时结束，有效性难衡量</td>
+<td align="left">分析汇编<strong>代价极高</strong>，比源码层面更费力</td>
+</tr>
+</tbody></table>
+<h3 id="什么是模糊测试"><a href="#什么是模糊测试" class="headerlink" title="什么是模糊测试"></a>什么是模糊测试</h3><ul>
+<li><p><strong>定义</strong>：通过提供非预期输入并监视异常结果来发现软件故障的方法，通常是自动或半自动的。</p>
+</li>
+<li><p><strong>模糊测试六阶段</strong>：识别目标 → 识别输入 → 生成模糊数据 → 执行模糊数据 → 监视异常 → 确定可利用性。</p>
+</li>
+</ul>
+<h3 id="模糊测试方法和模糊器类型"><a href="#模糊测试方法和模糊器类型" class="headerlink" title="模糊测试方法和模糊器类型"></a>模糊测试方法和模糊器类型</h3><ul>
+<li><strong>五类方法</strong>：预先生成测试用例、随机方法、协议变异人工测试、变异&#x2F;强制性测试、自动协议生成测试。</li>
+<li><strong>模糊器类型</strong>：<ul>
+<li>本地模糊器（命令行、环境变量、文件格式）</li>
+<li>远程模糊器（网络协议、Web应用）</li>
+<li>内存模糊器</li>
+<li>模糊器框架（SPIKE、Peach等）</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据表示和分析"><a href="#数据表示和分析" class="headerlink" title="数据表示和分析"></a>数据表示和分析</h3><ul>
+<li><strong>协议定义</strong>：通信双方必须遵循的约定，包括定长域、变长域和分隔域。</li>
+<li><strong>协议分类</strong>：简单文本协议（如FTP控制信道）和二进制协议（如AIM的OSCAR协议）。</li>
+<li><strong>文件格式</strong>：开放格式（如ODF）和专有格式（如旧版Microsoft Office）。</li>
+<li><strong>常见协议元素</strong>：名字-值对、块标识符、块长度、校验和</li>
+</ul>
+<h3 id="有效模糊测试的需求"><a href="#有效模糊测试的需求" class="headerlink" title="有效模糊测试的需求"></a>有效模糊测试的需求</h3><ul>
+<li><strong>可重现性</strong>：必须能重现测试结果，便于交流和分析。</li>
+<li><strong>可重用性</strong>：模糊器应模块化，便于在不同项目中复用。</li>
+<li><strong>过程状态与深度</strong>：目标程序在不同状态下的逻辑分支需要分别测试。</li>
+<li><strong>代码覆盖</strong>：衡量测试充分性的关键指标。</li>
+<li><strong>错误检测</strong>：从简单日志到调试器监视，再到动态二进制插装。</li>
+<li><strong>资源约束</strong>：预算和时间限制影响模糊器的设计和选择。</li>
+</ul>
+<h3 id="通用模糊测试框架"><a href="#通用模糊测试框架" class="headerlink" title="通用模糊测试框架"></a>通用模糊测试框架</h3><p>提供API或脚本语言，允许用户描述协议&#x2F;文件格式，自动生成测试用例</p>
+<ul>
+<li><strong>SPIKE</strong>（Dave Aitel 发布）：最早的开源框架之一，采用GPL许可。核心是基于<strong>块</strong>的协议建模（<code>s_block_start/end</code>），能自动更新长度字段和校验和；内置大量模糊启发式数据（整型边界、长字符串、格式化字符串等）；提供通用脚本模糊器（如<code>line_send_tcp.c</code>）和特定协议示例（HTTP、MSRPC、SunRPC）。</li>
+<li><strong>SPIKEfile &#x2F; notSPIKEfile</strong>：基于SPIKE的文件格式模糊器（生成法）和独立变异模糊器，均集成<strong>ptrace调试监控</strong>，可捕获SIGSEGV等信号并反汇编崩溃点，支持UNIX&#x2F;Linux平台。</li>
+<li><strong>Peach</strong>（Michael Eddington）：跨平台（Python编写），支持网络协议、文件格式、ActiveX等多种目标，灵活性强，允许用XML&#x2F;Python定义状态机模型。</li>
+<li><strong>Sulley</strong>：包含数据表示（原语&#x2F;块）、会话管理、网络监控和**事后验证（崩溃诊断）**模块，目录结构清晰，适合自动化大规模模糊测试。</li>
+<li><strong>antiparser &#x2F; Dfuz &#x2F; Autodafe</strong>：其他轻量级或特定场景的开源框架，用于快速原型或特定协议测试。</li>
+</ul>
+<h3 id="本地化模糊测试工具"><a href="#本地化模糊测试工具" class="headerlink" title="本地化模糊测试工具"></a>本地化模糊测试工具</h3><ul>
+<li><strong>iFUZZ</strong>（Adam Greene）：模块化C语言工具，支持<code>argv[0]</code>、<code>argv[1]</code>、单&#x2F;多选项、<code>getopt</code>解析等多种模糊模式；采用<code>fork+ptrace</code>监控信号，可输出C语言触发代码便于复现。</li>
+<li><strong>Sharefuzz</strong>（Dave Aitel）：利用<strong>库预加载</strong>（<code>LD_PRELOAD</code>）钩住<code>getenv()</code>函数，对所有环境变量返回超长字符串，快速检测缓冲区溢出。</li>
+<li><strong>clfuzz</strong>（warlock）：命令行参数模糊器，针对格式化字符串和栈溢出。</li>
+</ul>
+<h3 id="文件格式模糊测试工具"><a href="#文件格式模糊测试工具" class="headerlink" title="文件格式模糊测试工具"></a>文件格式模糊测试工具</h3><h4 id="Windows平台"><a href="#Windows平台" class="headerlink" title="Windows平台"></a>Windows平台</h4><ul>
+<li><strong>FileFuzz</strong>：C# GUI + C调试器（<code>crash.exe</code>）。支持<strong>二进制文件</strong>（宽度扫描&#x2F;深度穷举）和<strong>ASCII文本</strong>（匹配替换）两种变异方式；通过Windows注册表&#x2F;资源管理器自动获取文件类型关联的启动命令；内嵌调试API，结合libdasm反汇编，捕获内存访问违规、除零、栈溢出等异常。</li>
+<li><strong>PAIMEIfilefuzz</strong>（Cody Pierce）：基于PaiMei逆向框架的Windows GUI工具，功能类似FileFuzz。</li>
+</ul>
+<h4 id="UNIX-Linux平台"><a href="#UNIX-Linux平台" class="headerlink" title="UNIX&#x2F;Linux平台"></a>UNIX&#x2F;Linux平台</h4><ul>
+<li><strong>notSPIKEfile（变异）</strong> 和 <strong>SPIKEfile（生成）</strong>：前者直接对样本文件逐字节&#x2F;逐字段变异；后者使用SPIKE脚本描述文件格式结构。两者共享<code>ptrace</code>监控模块，可输出崩溃时的寄存器、指令和调用栈。</li>
+</ul>
+<h3 id="网络协议模糊测试工具"><a href="#网络协议模糊测试工具" class="headerlink" title="网络协议模糊测试工具"></a>网络协议模糊测试工具</h3><h4 id="通用协议-框架脚本"><a href="#通用协议-框架脚本" class="headerlink" title="通用协议 &#x2F; 框架脚本"></a>通用协议 &#x2F; 框架脚本</h4><ul>
+<li><strong>SPIKE原生脚本</strong>：内置FTP、SMTP、IMAP、CIFS、Oracle、MS SQL等协议的模板脚本，可直接使用<code>generic_send_tcp</code>等通用模糊器。</li>
+<li><strong>ProtoFuzz</strong>（Windows C#开发）：采用<strong>包变异</strong>方法，使用<strong>Metro Packet Library</strong>捕获&#x2F;解析&#x2F;发送原始包（支持以太网、IP、TCP、UDP）；用户可用<code>[XX]</code>标记单字节暴力变异，或用<code>&lt;XX&gt;</code>标记字符串池变异；图形化展示包结构（类似Wireshark）。</li>
+</ul>
+<h4 id="Web应用-服务器"><a href="#Web应用-服务器" class="headerlink" title="Web应用&#x2F;服务器"></a>Web应用&#x2F;服务器</h4><ul>
+<li><strong>WebFuzz</strong>：C# GUI工具，允许用户完全控制<strong>原始HTTP请求</strong>（方法、URI、头、Cookie、POST数据），用<code>[SQL]</code>、<code>[XSS]</code>、<code>[Overflow]</code>等标签标记模糊变量；支持异步Socket和超时控制；可捕获响应并关联状态码&#x2F;错误消息。</li>
+<li><strong>SPIKE Proxy</strong>（Dave Aitel）：基于Python的浏览器代理型Web模糊器，拦截请求并运行SQL注入&#x2F;XSS&#x2F;溢出等预定义审核。</li>
+<li><strong>WebScarab</strong>（OWASP）：集成Web蜘蛛、代理和基础模糊器的综合套件。</li>
+<li><strong>LiveHTTPHeaders &#x2F; Tamper Data &#x2F; Fiddler</strong>：辅助插件，用于捕获和修改请求，配合WebFuzz使用。</li>
+</ul>
+<h4 id="浏览器-ActiveX控件"><a href="#浏览器-ActiveX控件" class="headerlink" title="浏览器 &#x2F; ActiveX控件"></a>浏览器 &#x2F; ActiveX控件</h4><ul>
+<li><strong>AxMan</strong>（H.D. Moore）：ActiveX模糊器，枚举已注册控件的CLSID、接口、方法和参数类型（通过类型库），自动生成变异调用序列。</li>
+<li><strong>COMRaider</strong>（David Zimmer）：类似AxMan，提供GUI界面，用于发现ActiveX控件中的内存破坏漏洞。</li>
+<li><strong>mangleme</strong>（Michal Zalewski）：CGI脚本，持续生成畸形的HTML文件供浏览器刷新加载。</li>
+<li><strong>Hamachi &#x2F; CSSDIE</strong>：分别针对DHTML脚本和CSS解析器的专用模糊器。</li>
+</ul>
+<h3 id="内存数据模糊测试工具"><a href="#内存数据模糊测试工具" class="headerlink" title="内存数据模糊测试工具"></a>内存数据模糊测试工具</h3><ul>
+<li><strong>PyDbg</strong>（PaiMei框架子模块）：纯Python Windows 32位调试器，支持在目标进程的<strong>特定内存点</strong>植入钩子（hook），在数据被解析前直接变异内存缓冲区；可保存进程快照并快速恢复，绕过网络&#x2F;文件I&#x2F;O瓶颈，大幅提升测试速度。</li>
+</ul>
+
+
+            <div class="article-content__end">
+                <span>EOF</span>
+                <span>CHECKSUM_OK</span>
+            </div>
+        </div>
+
+        
+            <aside class="article-sidebar" aria-label="文章目录">
+                <div class="toc-panel">
+                    <p class="toc-panel__title"><span>//</span> CONTENT_MAP</p>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BD%E7%9B%92%E6%B5%8B%E8%AF%95%E3%80%81%E9%BB%91%E7%9B%92%E6%B5%8B%E8%AF%95%E5%92%8C%E7%81%B0%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">白盒测试、黑盒测试和灰盒测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95"><span class="toc-text">什么是模糊测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E5%92%8C%E6%A8%A1%E7%B3%8A%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">模糊测试方法和模糊器类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%88%86%E6%9E%90"><span class="toc-text">数据表示和分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E6%95%88%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E7%9A%84%E9%9C%80%E6%B1%82"><span class="toc-text">有效模糊测试的需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="toc-text">通用模糊测试框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%8C%96%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="toc-text">本地化模糊测试工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="toc-text">文件格式模糊测试工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="toc-text">网络协议模糊测试工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="toc-text">内存数据模糊测试工具</span></a></li></ol></li></ol>
+                    <a class="toc-panel__top" href="#article-header">↑ RETURN_TO_HEADER</a>
+                </div>
+            </aside>
+        
+    </div>
+
+    
+        <nav class="article-neighbors" aria-label="Adjacent posts">
+            
+                <span class="article-neighbors__empty">← PREVIOUS_LOG // NULL</span>
+            
+
+            
+                <a href="/posts/linux-kernel-usma/" rel="next">
+                    <span>NEXT_LOG →</span>
+                    <strong>Linux Kernel : USMA</strong>
+                </a>
+            
+        </nav>
+    
+
+    
+        <div class="article-comments">
+            
+
+
+<section class="comments-section comments-section--no-recommendations" aria-labelledby="comments-title">
+    <p class="section-kicker">// EXTERNAL_CHANNEL</p>
+    <h2 id="comments-title">COMMENTS</h2>
+    <div id="disqus_thread"></div>
+    <script>
+        (function () {
+            if (/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)) {
+                document.getElementById('disqus_thread').textContent = 'LOCAL_PREVIEW // COMMENTS_NOT_LOADED';
+                return;
+            }
+            var d = document, s = d.createElement('script');
+            s.src = 'https://' + "starlight-blog" + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', String(+new Date()));
+            (d.head || d.body).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</section>
+
+
+        </div>
+    
+</article>
+
+</section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    
+<footer class="site-footer">
+    <section class="footer-signal" aria-labelledby="footer-signal-title">
+        <div class="footer-signal__copy">
+            <p class="terminal-command"><span class="prompt">$</span> contact --channel secure</p>
+            <h2 id="footer-signal-title">Starlight's blog — 危栈望星空</h2>
+            <p>// RESPONSE_TIME: WHEN_THE_SIGNAL_IS_CLEAR</p>
+        </div>
+        
+            <a class="footer-email" href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">
+                <span>GITHUB / XXINGGOD</span><span aria-hidden="true">↗</span>
+            </a>
+        
+    </section>
+
+    <div class="footer-meta">
+        <p>© 2026 Starlight · BUILT_WITH_HEXO · SIGNAL_THEME</p>
+        <div class="footer-links">
+            <a href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">GITHUB</a>
+            
+            
+            
+        </div>
+        <a class="back-to-top" href="#top" aria-label="回到顶部">↑ TOP</a>
+    </div>
+</footer>
+
+</div>
+
+<!-- Local post search -->
+
+
+
+<section id="search-panel" class="search-panel" data-search-panel data-search-index-url="/search.json" hidden aria-hidden="true">
+    <button class="search-panel__backdrop" type="button" data-search-close tabindex="-1" aria-label="Close search"></button>
+    <div class="search-terminal" role="dialog" aria-modal="true" aria-labelledby="search-dialog-title">
+        <header class="search-terminal__bar">
+            <div class="window-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p id="search-dialog-title">SEARCH_PROTOCOL // LOCAL_INDEX</p>
+            <button type="button" data-search-close aria-label="Close search">[ESC]</button>
+        </header>
+        <div class="search-terminal__body">
+            <label class="search-label" for="search-input"><span class="prompt">$</span> query --all-posts</label>
+            <div class="search-input-row">
+                <span aria-hidden="true">&gt;</span>
+                <input id="search-input" data-search-input type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="输入标题、标签或关键词…" aria-describedby="search-status">
+                <span class="search-caret" aria-hidden="true"></span>
+            </div>
+            <p id="search-status" class="search-status" data-search-status aria-live="polite">TYPE_TO_SCAN_THE_ARCHIVE</p>
+            <div id="search-results" class="search-results" data-search-results></div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- After footer scripts -->
+
+<!-- jQuery (local) -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Gallery (local) -->
+<script src="/js/featherlight.min.js"></script>
+
+<!-- Custom JavaScript -->
+
+<script src="/js/main.js"></script>
+
+
+
+</body>
+
+</html>
