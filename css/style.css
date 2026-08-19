@@ -2170,19 +2170,20 @@ header .logo .title {
   margin-top: 0;
 }
 .post-card {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  position: relative;
+  display: flex;
   min-height: 460px;
+  flex-direction: column;
   padding: clamp(32px, 4vw, 54px);
   background: rgba(16,11,29,0.6);
 }
 .post-card .post-card__meta {
-  position: static;
   min-width: 0;
   min-height: 24px;
   gap: 20px;
   font-size: 14px;
+}
+.post-card .post-card__meta .post-card__status {
+  margin-left: auto;
 }
 .post-card .post-card__body {
   display: flex;
@@ -2194,6 +2195,7 @@ header .logo .title {
   margin-top: 0;
 }
 .post-card .post-card__command {
+  max-width: 100%;
   margin-bottom: 20px;
   font-size: 15px;
 }
@@ -2204,6 +2206,7 @@ header .logo .title {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
   margin: 0 0 18px;
   color: #807697;
   font-family: "Fusion Pixel Latin", "SFMono-Regular", "Cascadia Mono", "Noto Sans Mono CJK SC", "PingFang SC", monospace;
@@ -2211,6 +2214,8 @@ header .logo .title {
   line-height: 1.5;
 }
 .post-card .post-card__origin span {
+  padding-right: 8px;
+  border-right: 1px solid #2b2440;
   color: #6b2bb8;
 }
 .post-card .post-card__origin a {
@@ -2222,6 +2227,7 @@ header .logo .title {
   text-shadow: none;
 }
 .post-card .post-card__body h3 {
+  margin: 0;
   font-size: 64px;
 }
 .post-card .post-card__body h3 a {
