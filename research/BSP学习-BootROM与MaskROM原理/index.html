@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+
+    
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#050310">
+    <meta name="color-scheme" content="dark">
+    <link rel="canonical" href="https://xxinggod.click/research/BSP%E5%AD%A6%E4%B9%A0-BootROM%E4%B8%8EMaskROM%E5%8E%9F%E7%90%86/">
+    <meta name="signal:search" content="/search.json">
+
+    <!--Description-->
+    
+        <meta name="description" content="Binary Researcher">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Starlight">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="BSP学习(BootROM与MaskROM原理)"/>
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="Binary Researcher" />
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Starlight&#39;s blog"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+    
+        <meta name="twitter:card" content="summary" />
+    
+    
+    
+
+    <!-- Title -->
+    
+    <title>BSP学习(BootROM与MaskROM原理) - Starlight&#39;s blog</title>
+
+    <!-- Bootstrap Core CSS (local) -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <!-- Gallery (local) -->
+    <link rel="stylesheet" href="/css/featherlight.min.css">
+
+    <!-- Web Fonts (local) -->
+    <link rel="stylesheet" href="/css/fonts.css">
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Google Analytics -->
+    
+
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body id="top" class="page-type-post title-style-clean is-article">
+
+<a class="skip-link" href="#main-content">SKIP_TO_CONTENT</a>
+<div class="site-noise" aria-hidden="true"></div>
+
+<div class="site-frame">
+    <!-- Terminal Header -->
+    <!-- Terminal Header: Window bar + nav row -->
+
+<header class="site-header">
+    <div class="window-bar">
+        <a class="window-title" href="/">
+            <span class="window-title__system">SECURITY RESEARCH LOG</span>
+            <span class="window-title__divider">·</span>
+            <span class="window-title__name">Starlight's blog</span>
+        </a>
+        <div class="window-status">
+            <span class="status-led" aria-hidden="true"></span>
+            <span class="window-status__host">XXINGGOD.CLICK</span>
+        </div>
+    </div>
+    <div class="nav-row">
+        <a class="site-mark" href="/">
+            <span class="site-mark__bracket">[</span><span>STAR</span><span class="site-mark__slash">/</span><span class="site-mark__bracket">]</span>
+        </a>
+        <button class="nav-toggle terminal-button" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false">
+            <span class="nav-toggle__label">MENU</span>
+            <span class="nav-toggle__glyph" aria-hidden="true">[+]</span>
+        </button>
+        <nav id="site-nav" class="site-nav" data-site-nav aria-label="Main navigation">
+            
+            <a href="/" data-nav-link><span class="nav-prompt">./</span>HOME</a>
+            
+            <a href="/archives" data-nav-link><span class="nav-prompt">./</span>ARCHIVE</a>
+            
+            <a href="/about/" data-nav-link><span class="nav-prompt">./</span>ABOUT</a>
+            
+            <a href="/tags" data-nav-link><span class="nav-prompt">./</span>TAGS</a>
+            
+            <a href="/categories" data-nav-link><span class="nav-prompt">./</span>CATEGORIES</a>
+            
+            <a href="/link/" data-nav-link><span class="nav-prompt">./</span>LINKS</a>
+            
+        </nav>
+        
+            <button class="search-trigger terminal-button" type="button" data-search-open aria-label="SEARCH">
+                <span class="search-trigger__key">⌘K</span>
+                <span>SEARCH</span>
+            </button>
+        
+    </div>
+</header>
+
+
+    <main id="main-content" class="site-main" tabindex="-1">
+        <!-- Main Content -->
+        <div class="container">
+            <section class="main">
+    
+
+<div class="reading-progress" aria-hidden="true"></div>
+
+<article class="article-page">
+    <header class="article-header" id="article-header">
+        <div class="article-header__protocol">
+            <span>// RESEARCH_TRANSMISSION</span>
+            <span>ID: BSP_BOOTROM_MASKROM</span>
+        </div>
+
+        <h1>BSP学习(BootROM与MaskROM原理)</h1>
+
+        
+
+        <div class="article-meta">
+            
+                <div>
+                    <span>PUBLISHED</span>
+                    <time datetime="2026-08-20T09:00:00.000Z">2026.08.20</time>
+                </div>
+            
+            <div>
+                <span>READ_TIME</span>
+                <strong>4 MIN</strong>
+            </div>
+            <div>
+                <span>PAYLOAD</span>
+                <strong>1,984 CHAR</strong>
+            </div>
+            
+                <div>
+                    <span>CHANNEL</span>
+                    <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
+                </div>
+            
+        </div>
+
+        
+            <div class="article-tags">
+                <span class="article-tags__label">// INDICATORS</span>
+                
+                    <a class="chip" href="/tags/IOT/">IOT</a>
+                
+                    <a class="chip" href="/tags/BSP/">BSP</a>
+                
+            </div>
+        
+
+        
+
+    </header>
+
+    <div class="article-layout ">
+        <div class="article-content" data-article-content>
+            <div class="article-content__start">
+                <span>BEGIN_PAYLOAD</span>
+                <span>20260820</span>
+            </div>
+
+            
+
+            <h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p>RK3399有两种工作模式：</p>
+<ol>
+<li><strong>Normal模式</strong>：一般情况下，在镜像烧录完成后，开发板上电后会直接正常启动系统，这就是Normal模式。Normal模式支持eMMC或者SD卡启动</li>
+<li><strong>升级模式</strong>(分为三种)：<ol>
+<li>MaskRom模式：在没有<code>bootloader</code>程序的情况下，停在<code>BootRom</code>等待线刷固件</li>
+<li>Loader升级模式：有<code>bootloader</code>时，通过<code>bootloader</code>加载镜像</li>
+<li>SD升级模式：在外部通过工具在SD卡烧录镜像，插卡后直接从SD卡启动</li>
+</ol>
+</li>
+</ol>
+<p>总结：</p>
+<p><img src="/img/BSP%E5%AD%A6%E4%B9%A0-BootROM%E4%B8%8EMaskROM%E5%8E%9F%E7%90%86/0c83a8a22f3cbc49cf5d4c4917c02160.jpg" alt="img"></p>
+<p>以上就是嵌入式系统普遍的工作模式，各芯片厂商的命名有些区别，但底层原理都是一样的。</p>
+<h2 id="MaskROM与BootROM"><a href="#MaskROM与BootROM" class="headerlink" title="MaskROM与BootROM"></a>MaskROM与BootROM</h2><p>ROM：Read only memory，只读存储器。</p>
+<p>MaskROM：掩模只读存储器，芯片的一种制造工艺，在芯片制造的最后一道工序中，通过“掩模”(Mask)工艺直接把数据“刻”在硅片上。</p>
+<p>BootROM：启动程序存储器，实际就是启动程序，然后这个启动程序存放在<code>MaskROM</code>中。</p>
+<p><code>MaskROM</code>是一个<strong>容器</strong>，<code>BootROM</code>是<strong>软件是启动程序</strong>。</p>
+<h3 id="BootROM"><a href="#BootROM" class="headerlink" title="BootROM"></a>BootROM</h3><p><code>BootROM</code>是由SoC厂商设计的，它是芯片出厂时就固化在硅片内部的只读代码。<code>BootROM</code>是SoC启动时的<code>入口点</code>(当芯片上电，时钟稳定后，<strong>CPU执行的第一行代码</strong>)。</p>
+<p><code>BootROM</code> 程序与 <code>u-Boot</code>、<code>Kernel</code> 最大的不同是<strong>它不是存放在常见的存储介质中</strong>，如 SRAM、DDR、Flash等，它在芯片制造的 最后阶段（光刻掩膜阶段)，代码就已经作为逻 辑电路的一部分被“刻”在硅片上了。</p>
+<p>当芯片离开芯片可代工厂后就再也无法更改。事实上在芯片仿真验证阶段的后期就基本不会再进行修改了。</p>
+<p>流片后如果要修改 <code>BootROM</code> 代价巨大，属于一级事故，所以芯片设计阶段会异常谨慎。 为了防止真的出了问题需要修复，可以在芯片中预留了一些寄存器或者极少的 SRAM。 如果真的有问题必须修复，一般会通过 patch进行 workaround，在芯片启动阶段将需要修改的部分引导至备用SRAM或寄存器来进行功能修复。</p>
+<p>由于<code>BootROM</code>是固化在逻辑电路上的，所以其空间很小且极其宝贵，通常只有32~128KB，所以它只负责保证芯片上电后<strong>生存必要</strong>的功能。</p>
+<h3 id="BootROM功能"><a href="#BootROM功能" class="headerlink" title="BootROM功能"></a>BootROM功能</h3><p>总结为三点：<code>找系统</code>、<code>验真伪</code>和<code>救砖头</code>。</p>
+<h4 id="找系统–启动介质选择"><a href="#找系统–启动介质选择" class="headerlink" title="找系统–启动介质选择"></a>找系统–启动介质选择</h4><p>芯片上电后，<code>BootROM</code>会扫描外部接口(SD卡、eMMC、UFS、SPI Flash等)，寻找合法的引导程序。</p>
+<p>可以按照预设的优先级进行搜索。</p>
+<p>除了扫描之外，也有厂商会提供<code>BootstrapPins</code>，SoC会预留几个特定的针脚，PCB厂商在设计电路板时，通过<strong>上拉电阻</strong>(接高电平)或者<strong>下拉电阻</strong>(接地)来设置这些引脚的状态。</p>
+<p>在CPU刚上电后的几个微妙内，<code>BootROM</code>会读取这些针脚的电平值来判断启动介质。</p>
+<h4 id="验真伪–安全校验"><a href="#验真伪–安全校验" class="headerlink" title="验真伪–安全校验"></a>验真伪–安全校验</h4><p>很多高端SoC会开启“<strong>安全启动</strong>”，目的是防止外部替换存储介质进行篡改系统或破解行为。</p>
+<h4 id="救砖头–MaskROM模式"><a href="#救砖头–MaskROM模式" class="headerlink" title="救砖头–MaskROM模式"></a>救砖头–MaskROM模式</h4><p>如果外部存储器是空的或者固件损坏，<strong>BootROM会启动内置的极简USB驱动，并初始化SRAM</strong>。把SoC变成一个USB从设备。</p>
+<p>电脑可以通过USB线将最初始的代码下载到SoC的内部SRAM里运行。</p>
+<blockquote>
+<p>变砖就是，无法通过外部下载器下载镜像，无法进入系统。</p>
+</blockquote>
+<h3 id="升级模式详解"><a href="#升级模式详解" class="headerlink" title="升级模式详解"></a>升级模式详解</h3><h4 id="MaskROM模式"><a href="#MaskROM模式" class="headerlink" title="MaskROM模式"></a>MaskROM模式</h4><p><strong>MaskROM升级原理是</strong>：人为的把Flash(Nor Flash、 Nand Flash和eMMC等存储设备)的<strong>CLK</strong>时钟引脚与地线短接，使得<code>BootROM</code>程序无法获取合法的启动介质从而去初始化USB设备以及SRAM并停留在<code>BootROM</code>阶段，等待用户下载固件。</p>
+<p>通常来说在设备可以进入<code>loader</code>升级模式的情况下，优先使用<code>Loader</code>升级模式。</p>
+<p>我们的开发版-Nanopc-T4设计了Boot按键，不需要额外的短接，进入<code>MaskROM</code>相对安全且方便，可以作为日常烧录手段。</p>
+<p>Nanopc-T4进入<code>MaskROM</code>的方法是，开发板Type c口接PC，在开发板下电后，长按Boot键5s，然后上电。如果此时打开RKdev烧录工具，就会显示“发现一个MASKROM设备”</p>
+<h4 id="Loader模式"><a href="#Loader模式" class="headerlink" title="Loader模式"></a>Loader模式</h4><p>在<code>loader</code>模式下，<code>bootloader</code>会进入升级状态，等待主机命令，用于固件升级等。要进入Loader模式，必须让<code>bootloader</code>在启动时检测到<code>Recovery</code>键按下，且 Type-C处于连接状态。</p>
+<p>Nanopc-T4进入 Loader 模式的方法是，开发板Typec 口接PC，在开发板下电的后，长按 Recovery (1.5s以上)，上电。</p>
+<h4 id="SD卡模式"><a href="#SD卡模式" class="headerlink" title="SD卡模式"></a>SD卡模式</h4><p>使用MicroSD更新固件，需要在电脑上，通过 SD卡烧录工具，将统一固件写入MicroSD卡, 目前此操作只支持在Windows操作系统上完 成。</p>
+
+
+            <div class="article-content__end">
+                <span>EOF</span>
+                <span>CHECKSUM_OK</span>
+            </div>
+        </div>
+
+        
+            <aside class="article-sidebar" aria-label="文章目录">
+                <div class="toc-panel">
+                    <p class="toc-panel__title"><span>//</span> CONTENT_MAP</p>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-text">工作模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MaskROM%E4%B8%8EBootROM"><span class="toc-text">MaskROM与BootROM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BootROM"><span class="toc-text">BootROM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BootROM%E5%8A%9F%E8%83%BD"><span class="toc-text">BootROM功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3"><span class="toc-text">升级模式详解</span></a></li></ol></li></ol>
+                    <a class="toc-panel__top" href="#article-header">↑ RETURN_TO_HEADER</a>
+                </div>
+            </aside>
+        
+    </div>
+
+    
+        <nav class="article-neighbors" aria-label="Adjacent posts">
+            
+                <span class="article-neighbors__empty">← PREVIOUS_LOG // NULL</span>
+            
+
+            
+                <a href="/research/BSP%E5%AD%A6%E4%B9%A0-WHAT/" rel="next">
+                    <span>NEXT_LOG →</span>
+                    <strong>BSP学习(WHAT）</strong>
+                </a>
+            
+        </nav>
+    
+
+    
+        <div class="article-comments">
+            
+
+
+<section class="comments-section comments-section--no-recommendations" aria-labelledby="comments-title">
+    <p class="section-kicker">// EXTERNAL_CHANNEL</p>
+    <h2 id="comments-title">COMMENTS</h2>
+    <div id="disqus_thread"></div>
+    <script>
+        (function () {
+            if (/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)) {
+                document.getElementById('disqus_thread').textContent = 'LOCAL_PREVIEW // COMMENTS_NOT_LOADED';
+                return;
+            }
+            var d = document, s = d.createElement('script');
+            s.src = 'https://' + "starlight-blog" + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', String(+new Date()));
+            (d.head || d.body).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</section>
+
+
+        </div>
+    
+</article>
+
+</section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    
+<footer class="site-footer">
+    <section class="footer-signal" aria-labelledby="footer-signal-title">
+        <div class="footer-signal__copy">
+            <p class="terminal-command"><span class="prompt">$</span> contact --channel secure</p>
+            <h2 id="footer-signal-title">Starlight's blog — 危栈望星空</h2>
+            <p>// RESPONSE_TIME: WHEN_THE_SIGNAL_IS_CLEAR</p>
+        </div>
+        
+            <a class="footer-email" href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">
+                <span>GITHUB / XXINGGOD</span><span aria-hidden="true">↗</span>
+            </a>
+        
+    </section>
+
+    <div class="footer-meta">
+        <p>© 2026 Starlight · BUILT_WITH_HEXO · SIGNAL_THEME</p>
+        <div class="footer-links">
+            <a href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">GITHUB</a>
+            
+            
+            
+        </div>
+        <a class="back-to-top" href="#top" aria-label="回到顶部">↑ TOP</a>
+    </div>
+</footer>
+
+</div>
+
+<!-- Local post search -->
+
+
+
+<section id="search-panel" class="search-panel" data-search-panel data-search-index-url="/search.json" hidden aria-hidden="true">
+    <button class="search-panel__backdrop" type="button" data-search-close tabindex="-1" aria-label="Close search"></button>
+    <div class="search-terminal" role="dialog" aria-modal="true" aria-labelledby="search-dialog-title">
+        <header class="search-terminal__bar">
+            <div class="window-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p id="search-dialog-title">SEARCH_PROTOCOL // LOCAL_INDEX</p>
+            <button type="button" data-search-close aria-label="Close search">[ESC]</button>
+        </header>
+        <div class="search-terminal__body">
+            <label class="search-label" for="search-input"><span class="prompt">$</span> query --all-posts</label>
+            <div class="search-input-row">
+                <span aria-hidden="true">&gt;</span>
+                <input id="search-input" data-search-input type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="输入标题、标签或关键词…" aria-describedby="search-status">
+                <span class="search-caret" aria-hidden="true"></span>
+            </div>
+            <p id="search-status" class="search-status" data-search-status aria-live="polite">TYPE_TO_SCAN_THE_ARCHIVE</p>
+            <div id="search-results" class="search-results" data-search-results></div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- After footer scripts -->
+
+<!-- jQuery (local) -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Gallery (local) -->
+<script src="/js/featherlight.min.js"></script>
+
+<!-- Custom JavaScript -->
+
+<script src="/js/main.js"></script>
+
+
+
+</body>
+
+</html>
