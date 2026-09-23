@@ -2775,7 +2775,7 @@ html {
   margin: 1.8em 0;
   border: 1px solid #2b2440;
   background: #050310;
-  overflow-x: auto;
+  overflow: hidden;
 }
 .article-page .article-content figure.highlight:before {
   display: block;
@@ -2790,9 +2790,14 @@ html {
   letter-spacing: 0.08em;
 }
 .article-page .article-content figure.highlight table {
-  width: max-content;
-  min-width: 100%;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .article-page .article-content figure.highlight pre {
   margin: 0;
@@ -2814,7 +2819,7 @@ html {
   margin: 1.8em 0;
   border: 1px solid #2b2440;
   background: #050310;
-  overflow-x: auto;
+  overflow: hidden;
 }
 .article-page .article-content .code-block pre {
   margin: 0;
@@ -2824,6 +2829,10 @@ html {
   font-size: 13px;
   line-height: 1.72;
   tab-size: 4;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .article-page .article-content .code-block pre code {
   padding: 0;
